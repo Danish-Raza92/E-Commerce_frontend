@@ -934,11 +934,9 @@
 
 <script>
   // ===== API CONFIG =====
-  // Railway deploy ke baad: apna Railway URL yahan lagao
-  // Example: 'https://danii-store-backend-production.up.railway.app'
-  const RAILWAY_BACKEND_URL = 'https://YOUR-PROJECT.up.railway.app';
+  const RAILWAY_BACKEND_URL = 'https://e-commercebackend-production-4ade.up.railway.app';
   const API_BASE = window.location.hostname === 'localhost'
-    ? 'http://localhost:5000/api'
+    ? 'http://localhost:8080/api'
     : RAILWAY_BACKEND_URL + '/api';
 
   async function apiCall(endpoint, method = 'GET', body = null) {
