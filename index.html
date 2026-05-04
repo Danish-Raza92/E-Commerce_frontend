@@ -1,0 +1,2001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 42 42'%3E%3Crect x='4' y='16' width='34' height='23' rx='4' fill='%231a1a2e'/%3E%3Cpath d='M14 16V13C14 9.686 16.686 7 20 7h2C25.314 7 28 9.686 28 13v3' stroke='%23ff6b35' stroke-width='2.5' stroke-linecap='round' fill='none'/%3E%3Ctext x='12' y='33' font-family='Arial' font-weight='900' font-size='15' fill='%23ff6b35'%3ED%3C/text%3E%3C/svg%3E">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danii.Store — Online Shopping in Pakistan 🛒</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #333; font-size: 14px; }
+  a { text-decoration: none; color: inherit; }
+
+  /* DANII LOGO */
+  .danii-logo { display: flex; align-items: center; gap: 10px; cursor: pointer; flex-shrink: 0; }
+  .danii-logo-icon { width: 42px; height: 42px; flex-shrink: 0; }
+  .danii-logo-text { display: flex; flex-direction: column; line-height: 1; }
+  .danii-logo-name { font-size: 22px; font-weight: 900; color: #1a1a2e; letter-spacing: -0.5px; }
+  .danii-logo-name span { color: #ff6b35; }
+  .danii-logo-tagline { font-size: 9px; color: #888; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 1px; }
+
+
+  /* MODAL OVERLAY */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 9000; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal-box { background: #fff; border-radius: 14px; width: 420px; max-width: 95vw; padding: 32px; position: relative; animation: popIn 0.25s ease; }
+  @keyframes popIn { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-close { position: absolute; top: 14px; right: 18px; background: none; border: none; font-size: 22px; cursor: pointer; color: #888; }
+  .modal-close:hover { color: #ff6b35; }
+  .modal-title { font-size: 20px; font-weight: 800; color: #1a1a2e; margin-bottom: 6px; }
+  .modal-sub { font-size: 13px; color: #888; margin-bottom: 22px; }
+  .form-group { margin-bottom: 14px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 5px; }
+  .form-group input { width: 100%; padding: 10px 13px; border: 1.5px solid #ddd; border-radius: 7px; font-size: 14px; outline: none; transition: border 0.2s; }
+  .form-group input:focus { border-color: #ff6b35; }
+  .form-btn { width: 100%; background: #ff6b35; color: #fff; border: none; padding: 12px; border-radius: 7px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 6px; transition: background 0.2s; }
+  .form-btn:hover { background: #e55a28; }
+  .modal-switch { text-align: center; font-size: 13px; color: #888; margin-top: 16px; }
+  .modal-switch a { color: #ff6b35; font-weight: 600; cursor: pointer; }
+  .modal-err { background: #fff0ec; border: 1px solid #ffb89e; color: #cc4a1e; font-size: 12px; padding: 8px 12px; border-radius: 6px; margin-bottom: 12px; display: none; }
+  .modal-err.show { display: block; }
+
+  /* ACCOUNT PANEL (dropdown) */
+  .acc-dropdown { display: none; position: absolute; top: 100%; right: 0; background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.13); min-width: 240px; z-index: 300; padding: 16px; }
+  .acc-dropdown.open { display: block; }
+  .acc-name { font-size: 15px; font-weight: 700; color: #1a1a2e; margin-bottom: 2px; }
+  .acc-email { font-size: 12px; color: #888; margin-bottom: 14px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; }
+  .acc-links a { display: flex; align-items: center; gap: 9px; padding: 8px 4px; font-size: 13px; color: #333; border-radius: 6px; cursor: pointer; }
+  .acc-links a:hover { background: #fff5f0; color: #ff6b35; }
+  .acc-logout { width: 100%; background: #f5f5f5; border: 1px solid #eee; color: #cc4a1e; padding: 9px; border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 12px; transition: background 0.2s; }
+  .acc-logout:hover { background: #fff0ec; }
+
+  /* CART SIDEBAR */
+  .cart-sidebar { position: fixed; right: -400px; top: 0; width: 380px; height: 100vh; background: #fff; z-index: 8000; box-shadow: -4px 0 30px rgba(0,0,0,0.15); transition: right 0.3s ease; display: flex; flex-direction: column; }
+  .cart-sidebar.open { right: 0; }
+  .cart-header { padding: 18px 20px; border-bottom: 1px solid #eee; display: flex; align-items: center; justify-content: space-between; }
+  .cart-header h3 { font-size: 17px; font-weight: 800; color: #1a1a2e; }
+  .cart-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #888; }
+  .cart-close:hover { color: #ff6b35; }
+  .cart-items { flex: 1; overflow-y: auto; padding: 14px 20px; }
+  .cart-empty { text-align: center; padding: 40px 0; color: #bbb; }
+  .cart-empty div { font-size: 48px; margin-bottom: 12px; }
+  .cart-empty p { font-size: 14px; }
+  .cart-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f5f5f5; align-items: center; }
+  .cart-item-img { font-size: 36px; width: 50px; text-align: center; flex-shrink: 0; }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-size: 13px; font-weight: 600; color: #1a1a2e; line-height: 1.3; }
+  .cart-item-price { font-size: 13px; color: #ff6b35; font-weight: 700; margin-top: 3px; }
+  .cart-item-qty { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+  .qty-btn { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #ddd; background: none; cursor: pointer; font-size: 14px; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .qty-btn:hover { background: #ff6b35; border-color: #ff6b35; color: #fff; }
+  .qty-num { font-size: 13px; font-weight: 700; min-width: 20px; text-align: center; }
+  .cart-item-del { background: none; border: none; color: #ccc; cursor: pointer; font-size: 16px; padding: 4px; transition: color 0.2s; }
+  .cart-item-del:hover { color: #ff4444; }
+  .cart-footer { padding: 16px 20px; border-top: 1px solid #eee; }
+  .cart-total-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 13px; color: #888; }
+  .cart-total-main { display: flex; justify-content: space-between; font-size: 16px; font-weight: 800; color: #1a1a2e; margin-bottom: 14px; padding-top: 8px; border-top: 1px solid #eee; }
+  .cart-checkout { width: 100%; background: #ff6b35; color: #fff; border: none; padding: 13px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+  .cart-checkout:hover { background: #e55a28; }
+  .cart-continue { width: 100%; background: none; border: 1.5px solid #ddd; color: #555; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: all 0.2s; }
+  .cart-continue:hover { border-color: #ff6b35; color: #ff6b35; }
+  .cart-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 7999; }
+  .cart-overlay.open { display: block; }
+
+  /* TOP BAR */
+  .topbar { background: #1a1a2e; color: #ccc; padding: 6px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+  .topbar a { color: #ccc; text-decoration: none; margin-left: 16px; cursor: pointer; }
+  .topbar a:hover { color: #fff; }
+  .topbar-left { display: flex; align-items: center; gap: 16px; }
+  .topbar-left span { color: #ff6b35; font-weight: 600; }
+
+  /* HEADER */
+  .header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 12px 20px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 500; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .logo { font-size: 26px; font-weight: 800; color: #1a1a2e; letter-spacing: -1px; flex-shrink: 0; cursor: pointer; }
+  .logo span { color: #ff6b35; }
+  .search-bar { flex: 1; display: flex; max-width: 560px; }
+  .search-bar input { flex: 1; border: 2px solid #ff6b35; border-right: none; padding: 10px 16px; font-size: 14px; border-radius: 6px 0 0 6px; outline: none; }
+  .search-bar button { background: #ff6b35; border: none; color: #fff; padding: 10px 20px; cursor: pointer; border-radius: 0 6px 6px 0; font-size: 16px; }
+  .search-bar button:hover { background: #e55a28; }
+  .header-actions { display: flex; gap: 20px; align-items: center; margin-left: auto; }
+  .header-action { display: flex; flex-direction: column; align-items: center; cursor: pointer; color: #333; font-size: 11px; gap: 2px; position: relative; }
+  .header-action svg { width: 22px; height: 22px; }
+  .header-action:hover { color: #ff6b35; }
+  .cart-badge { position: relative; }
+  .badge { background: #ff6b35; color: #fff; border-radius: 50%; width: 16px; height: 16px; font-size: 10px; display: flex; align-items: center; justify-content: center; position: absolute; top: -6px; right: -8px; font-weight: 700; }
+  .hotline { font-size: 13px; color: #1a1a2e; font-weight: 700; white-space: nowrap; }
+  .hotline small { display: block; font-size: 10px; font-weight: 400; color: #888; }
+
+  /* NAV */
+  .nav { background: #1a1a2e; }
+  .nav-inner { display: flex; align-items: center; padding: 0 20px; overflow-x: auto; }
+  .nav-item { position: relative; }
+  .nav-item > a { display: flex; align-items: center; gap: 6px; color: #e0e0e0; text-decoration: none; padding: 12px 14px; font-size: 13px; white-space: nowrap; font-weight: 500; transition: background 0.2s; cursor: pointer; }
+  .nav-item > a:hover, .nav-item > a.active { background: #ff6b35; color: #fff; }
+  .dropdown { display: none; position: absolute; top: 100%; left: 0; background: #fff; border: 1px solid #e0e0e0; box-shadow: 0 8px 24px rgba(0,0,0,0.12); min-width: 200px; z-index: 200; border-radius: 0 0 8px 8px; }
+  .nav-item:hover .dropdown { display: block; }
+  .dropdown a { display: block; padding: 9px 16px; color: #333; font-size: 13px; border-bottom: 1px solid #f5f5f5; cursor: pointer; }
+  .dropdown a:hover { background: #fff5f0; color: #ff6b35; }
+  .nav-deals { color: #ff6b35 !important; }
+
+  /* HERO SLIDER */
+  .hero { position: relative; background: #1a1a2e; overflow: hidden; height: 360px; }
+  .slides { display: flex; width: 300%; transition: transform 0.5s ease; height: 100%; }
+  .slide { width: 33.333%; height: 100%; display: flex; align-items: center; padding: 40px 60px; position: relative; overflow: hidden; }
+  .slide-1 { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); }
+  .slide-2 { background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); }
+  .slide-3 { background: linear-gradient(135deg, #1a1a2e 0%, #2d1b69 60%, #11998e 100%); }
+  .slide-content { z-index: 2; max-width: 50%; }
+  .slide-badge { background: #ff6b35; color: #fff; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+  .slide-title { font-size: 36px; font-weight: 800; color: #fff; line-height: 1.15; margin-bottom: 12px; }
+  .slide-title em { color: #ff6b35; font-style: normal; }
+  .slide-sub { color: #aaa; font-size: 15px; margin-bottom: 24px; }
+  .slide-btn { background: #ff6b35; color: #fff; border: none; padding: 12px 28px; border-radius: 6px; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .slide-btn:hover { background: #e55a28; }
+  .slide-img { position: absolute; right: 60px; top: 50%; transform: translateY(-50%); width: 280px; height: 280px; display: flex; align-items: center; justify-content: center; }
+  .slide-img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 8px 32px rgba(0,0,0,0.35)); }
+  .slide-dots { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; border: none; transition: all 0.3s; }
+  .dot.active { background: #ff6b35; width: 24px; border-radius: 4px; }
+  .slide-arrow { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.15); border: none; color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 10; transition: background 0.2s; }
+  .slide-arrow:hover { background: #ff6b35; }
+  .slide-arrow.left { left: 16px; }
+  .slide-arrow.right { right: 16px; }
+
+  /* PROMO STRIPS */
+  .promos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 16px 20px; background: #f5f5f5; }
+  .promo-card { background: #fff; border-radius: 8px; padding: 14px 18px; display: flex; align-items: center; gap: 14px; border: 1px solid #eee; cursor: default; }
+  .promo-icon { font-size: 28px; flex-shrink: 0; }
+  .promo-title { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+  .promo-sub { font-size: 11px; color: #888; }
+
+  /* SECTION */
+  .section { padding: 20px; background: #f5f5f5; }
+  .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .section-title { font-size: 18px; font-weight: 800; color: #1a1a2e; position: relative; padding-left: 12px; }
+  .section-title::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 4px; height: 20px; background: #ff6b35; border-radius: 2px; }
+  .view-all { color: #ff6b35; font-size: 13px; font-weight: 600; cursor: pointer; }
+  .view-all:hover { text-decoration: underline; }
+
+  /* CATEGORIES */
+  .cats-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+  .cat-card { background: #fff; border-radius: 10px; padding: 16px 10px; text-align: center; cursor: pointer; border: 1px solid #eee; transition: all 0.2s; }
+  .cat-card:hover { border-color: #ff6b35; box-shadow: 0 4px 16px rgba(255,107,53,0.15); transform: translateY(-2px); }
+  .cat-icon { font-size: 36px; margin-bottom: 8px; display: block; }
+  .cat-name { font-size: 12px; font-weight: 600; color: #1a1a2e; }
+
+  /* BRANDS */
+  .brands-row { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 4px; }
+  .brands-row::-webkit-scrollbar { height: 4px; }
+  .brands-row::-webkit-scrollbar-thumb { background: #ff6b35; border-radius: 2px; }
+  .brand-pill { background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 12px 24px; font-size: 13px; font-weight: 700; color: #1a1a2e; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all 0.2s; }
+  .brand-pill:hover { border-color: #ff6b35; color: #ff6b35; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab { background: #fff; border: 1px solid #e0e0e0; padding: 7px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; color: #555; transition: all 0.2s; }
+  .tab.active, .tab:hover { background: #ff6b35; color: #fff; border-color: #ff6b35; }
+
+  /* PRODUCTS */
+  .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .product-card { background: #fff; border-radius: 10px; overflow: hidden; border: 1px solid #eee; cursor: pointer; transition: all 0.2s; }
+  .product-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-3px); border-color: #ff6b35; }
+  .product-img { height: 180px; display: flex; align-items: center; justify-content: center; background: #f9f9f9; position: relative; overflow: hidden; }
+  .product-img img { width: 100%; height: 100%; object-fit: contain; padding: 12px; transition: transform 0.3s ease; }
+  .product-card:hover .product-img img { transform: scale(1.07); }
+  .product-badge { position: absolute; top: 8px; left: 8px; background: #ff6b35; color: #fff; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
+  .product-badge.new-badge { background: #0f6e56; }
+  .product-badge.hot-badge { background: #cc0000; }
+  .product-info { padding: 12px; }
+  .product-brand { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .product-name { font-size: 13px; font-weight: 600; color: #1a1a2e; margin: 4px 0; line-height: 1.3; }
+  .product-price { color: #ff6b35; font-size: 15px; font-weight: 800; }
+  .product-old { color: #aaa; font-size: 12px; text-decoration: line-through; margin-left: 6px; }
+  .product-actions { display: flex; gap: 8px; padding: 0 12px 12px; }
+  .btn-cart { flex: 1; background: #1a1a2e; color: #fff; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+  .btn-cart:hover { background: #ff6b35; }
+  .btn-cart.added { background: #22a85a !important; }
+  .btn-wish { background: #f5f5f5; border: 1px solid #eee; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 14px; transition: background 0.2s; }
+  .btn-wish:hover { background: #fff0ec; }
+  .btn-wish.active { background: #fff0ec; }
+
+  /* BANNER */
+  .double-banner { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px 20px; }
+  .banner { border-radius: 12px; padding: 28px 30px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; overflow: hidden; position: relative; min-height: 140px; transition: transform 0.2s; }
+  .banner:hover { transform: scale(1.01); }
+  .banner-1 { background: linear-gradient(135deg, #1a1a2e, #0f3460); }
+  .banner-2 { background: linear-gradient(135deg, #0f2027, #2c5364); }
+  .banner-text h3 { color: #fff; font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+  .banner-text p { color: #aaa; font-size: 13px; margin-bottom: 14px; }
+  .banner-text button { background: #ff6b35; color: #fff; border: none; padding: 8px 18px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; transition: background 0.2s; }
+  .banner-text button:hover { background: #e55a28; }
+  .banner-img { font-size: 80px; opacity: 0.9; }
+
+  /* NEWSLETTER */
+  .newsletter { background: #1a1a2e; padding: 40px 20px; text-align: center; }
+  .newsletter h2 { color: #fff; font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+  .newsletter p { color: #888; font-size: 14px; margin-bottom: 20px; }
+  .nl-form { display: flex; gap: 0; max-width: 420px; margin: 0 auto; }
+  .nl-form input { flex: 1; padding: 12px 16px; border: none; border-radius: 6px 0 0 6px; font-size: 14px; outline: none; }
+  .nl-form button { background: #ff6b35; color: #fff; border: none; padding: 12px 20px; border-radius: 0 6px 6px 0; font-size: 14px; font-weight: 700; cursor: pointer; }
+  .nl-form button:hover { background: #e55a28; }
+
+  /* FOOTER */
+  .footer { background: #111; color: #999; padding: 40px 20px 20px; }
+  .footer-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; margin-bottom: 30px; }
+  .footer-col h4 { color: #fff; font-size: 14px; font-weight: 700; margin-bottom: 14px; }
+  .footer-col p { font-size: 12px; margin-top: 10px; line-height: 1.6; }
+  .footer-col a { display: block; color: #888; font-size: 13px; margin-bottom: 8px; cursor: pointer; }
+  .footer-col a:hover { color: #ff6b35; }
+  .footer-bottom { border-top: 1px solid #222; padding-top: 20px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+  .footer-logo { font-size: 20px; font-weight: 800; color: #fff; }
+  .footer-logo span { color: #ff6b35; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a1a2e; color: #fff; padding: 12px 22px; border-radius: 8px; font-size: 13px; font-weight: 600; z-index: 99999; opacity: 0; transition: all 0.3s; border-left: 4px solid #ff6b35; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  /* TRACK ORDER MODAL */
+  .track-result { background: #f9f9f9; border: 1px solid #eee; border-radius: 8px; padding: 14px; margin-top: 14px; display: none; }
+  .track-result.show { display: block; }
+  .track-step { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+  .track-dot { width: 12px; height: 12px; border-radius: 50%; background: #ff6b35; flex-shrink: 0; margin-top: 3px; }
+  .track-dot.done { background: #22a85a; }
+  .track-dot.pending { background: #ddd; }
+  .track-info strong { font-size: 13px; color: #1a1a2e; }
+  .track-info span { font-size: 11px; color: #888; display: block; }
+
+  /* CATEGORY BRANDS MODAL */
+  .cat-modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9500; align-items:center; justify-content:center; }
+  .cat-modal-overlay.open { display:flex; }
+  .cat-modal-box { background:#fff; border-radius:16px; width:860px; max-width:96vw; max-height:90vh; overflow-y:auto; position:relative; animation:popIn 0.25s ease; }
+  .cat-modal-header { padding:22px 26px 16px; border-bottom:1px solid #eee; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:#fff; z-index:2; }
+  .cat-modal-title { font-size:20px; font-weight:800; color:#1a1a2e; }
+  .cat-modal-close { background:none; border:none; font-size:22px; cursor:pointer; color:#888; }
+  .cat-modal-close:hover { color:#ff6b35; }
+  .cat-modal-body { padding:20px 26px 26px; }
+  .brand-section-title { font-size:13px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:1px; margin-bottom:14px; }
+  .brands-grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-bottom:28px; }
+  .brand-card { border:1.5px solid #eee; border-radius:10px; padding:16px 12px; text-align:center; cursor:pointer; transition:all 0.2s; background:#fafafa; }
+  .brand-card:hover { border-color:#ff6b35; background:#fff5f0; transform:translateY(-2px); box-shadow:0 4px 14px rgba(255,107,53,0.12); }
+  .brand-card-logo { font-size:28px; margin-bottom:8px; }
+  .brand-card-name { font-size:13px; font-weight:700; color:#1a1a2e; }
+  .brand-card-count { font-size:11px; color:#888; margin-top:2px; }
+  .cat-products-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
+
+  /* ACCOUNT PANEL PAGES */
+  .acc-page-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); z-index:9200; align-items:flex-start; justify-content:center; overflow-y:auto; padding:20px; }
+  .acc-page-overlay.open { display:flex; }
+  .acc-page-box { background:#fff; border-radius:16px; width:700px; max-width:96vw; margin:auto; position:relative; animation:popIn 0.25s ease; }
+  .acc-page-header { padding:20px 24px 16px; border-bottom:1px solid #eee; display:flex; align-items:center; gap:14px; }
+  .acc-page-back { background:none; border:1.5px solid #eee; border-radius:8px; padding:6px 14px; font-size:13px; font-weight:600; cursor:pointer; color:#555; transition:all 0.2s; }
+  .acc-page-back:hover { border-color:#ff6b35; color:#ff6b35; }
+  .acc-page-title { font-size:18px; font-weight:800; color:#1a1a2e; }
+  .acc-page-body { padding:22px 24px 28px; }
+  .acc-close { position:absolute; top:16px; right:18px; background:none; border:none; font-size:22px; cursor:pointer; color:#888; }
+  .acc-close:hover { color:#ff6b35; }
+
+  /* ORDERS */
+  .order-card { border:1.5px solid #eee; border-radius:10px; padding:16px; margin-bottom:14px; }
+  .order-card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+  .order-id { font-size:13px; font-weight:700; color:#1a1a2e; }
+  .order-status { font-size:11px; font-weight:700; padding:4px 10px; border-radius:20px; }
+  .order-status.delivered { background:#e8f8ee; color:#0f6e56; }
+  .order-status.processing { background:#fff3e0; color:#e65100; }
+  .order-status.shipped { background:#e3f2fd; color:#1565c0; }
+  .order-items-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
+  .order-item-thumb { background:#f5f5f5; border-radius:8px; padding:10px; text-align:center; font-size:26px; width:56px; height:56px; display:flex; align-items:center; justify-content:center; }
+  .order-footer { display:flex; justify-content:space-between; align-items:center; padding-top:10px; border-top:1px solid #f5f5f5; }
+  .order-total { font-size:15px; font-weight:800; color:#ff6b35; }
+  .order-date { font-size:12px; color:#888; }
+  .order-actions { display:flex; gap:8px; }
+  .order-btn { font-size:12px; font-weight:600; padding:6px 14px; border-radius:6px; cursor:pointer; transition:all 0.2s; }
+  .order-btn.outline { background:none; border:1.5px solid #ddd; color:#555; }
+  .order-btn.outline:hover { border-color:#ff6b35; color:#ff6b35; }
+  .order-btn.primary { background:#ff6b35; border:none; color:#fff; }
+  .order-btn.primary:hover { background:#e55a28; }
+
+  /* WISHLIST */
+  .wish-grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:12px; }
+  .wish-card { border:1.5px solid #eee; border-radius:10px; overflow:hidden; transition:all 0.2s; }
+  .wish-card:hover { border-color:#ff6b35; box-shadow:0 4px 14px rgba(255,107,53,0.1); }
+  .wish-img { height:120px; background:#f9f9f9; display:flex; align-items:center; justify-content:center; font-size:48px; }
+  .wish-info { padding:12px; }
+  .wish-name { font-size:13px; font-weight:600; color:#1a1a2e; margin-bottom:4px; }
+  .wish-price { font-size:14px; font-weight:800; color:#ff6b35; margin-bottom:10px; }
+  .wish-actions { display:flex; gap:6px; }
+  .wish-btn { flex:1; font-size:12px; font-weight:600; padding:7px; border-radius:6px; cursor:pointer; transition:all 0.2s; }
+  .wish-btn.add { background:#1a1a2e; color:#fff; border:none; }
+  .wish-btn.add:hover { background:#ff6b35; }
+  .wish-btn.rem { background:none; border:1.5px solid #eee; color:#cc4a1e; }
+  .wish-btn.rem:hover { background:#fff0ec; border-color:#cc4a1e; }
+
+  /* ADDRESSES */
+  .addr-card { border:1.5px solid #eee; border-radius:10px; padding:16px; margin-bottom:12px; position:relative; }
+  .addr-card.default { border-color:#ff6b35; background:#fffaf8; }
+  .addr-default-badge { position:absolute; top:10px; right:10px; background:#ff6b35; color:#fff; font-size:10px; font-weight:700; padding:3px 8px; border-radius:10px; }
+  .addr-label { font-size:13px; font-weight:700; color:#1a1a2e; margin-bottom:6px; }
+  .addr-text { font-size:13px; color:#555; line-height:1.5; }
+  .addr-actions { display:flex; gap:8px; margin-top:12px; }
+  .addr-btn { font-size:12px; font-weight:600; padding:6px 14px; border-radius:6px; cursor:pointer; transition:all 0.2s; }
+  .addr-btn.edit { background:none; border:1.5px solid #ddd; color:#555; }
+  .addr-btn.edit:hover { border-color:#1a1a2e; color:#1a1a2e; }
+  .addr-btn.del { background:none; border:1.5px solid #eee; color:#cc4a1e; }
+  .addr-btn.del:hover { background:#fff0ec; border-color:#cc4a1e; }
+  .add-addr-btn { width:100%; border:2px dashed #ddd; background:none; border-radius:10px; padding:14px; font-size:14px; font-weight:600; color:#888; cursor:pointer; transition:all 0.2s; margin-top:4px; }
+  .add-addr-btn:hover { border-color:#ff6b35; color:#ff6b35; }
+
+  /* SETTINGS */
+  .settings-section { margin-bottom:24px; }
+  .settings-section-title { font-size:13px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:1px; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid #f0f0f0; }
+  .settings-row { display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid #fafafa; }
+  .settings-row-label { font-size:14px; font-weight:600; color:#1a1a2e; }
+  .settings-row-sub { font-size:12px; color:#888; margin-top:2px; }
+  .settings-field { border:1.5px solid #e0e0e0; border-radius:7px; padding:9px 13px; font-size:14px; width:220px; outline:none; transition:border 0.2s; }
+  .settings-field:focus { border-color:#ff6b35; }
+  .toggle { width:44px; height:24px; background:#ddd; border-radius:12px; position:relative; cursor:pointer; transition:background 0.3s; border:none; }
+  .toggle.on { background:#ff6b35; }
+  .toggle::after { content:''; position:absolute; top:3px; left:3px; width:18px; height:18px; background:#fff; border-radius:50%; transition:transform 0.3s; box-shadow:0 1px 4px rgba(0,0,0,0.2); }
+  .toggle.on::after { transform:translateX(20px); }
+  .save-settings-btn { background:#ff6b35; color:#fff; border:none; padding:11px 28px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:background 0.2s; margin-top:8px; }
+  .save-settings-btn:hover { background:#e55a28; }
+  .danger-btn { background:#fff0ec; border:1.5px solid #ffb89e; color:#cc4a1e; padding:10px 20px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+  .danger-btn:hover { background:#ffe0d6; }
+
+  @media (max-width: 768px) {
+    .cats-grid { grid-template-columns: repeat(3, 1fr); }
+    .products-grid { grid-template-columns: repeat(2, 1fr); }
+    .footer-grid { grid-template-columns: repeat(2, 1fr); }
+    .double-banner { grid-template-columns: 1fr; }
+    .promos { grid-template-columns: 1fr; }
+    .slide-img { display: none; }
+    .slide { padding: 30px; }
+    .slide-title { font-size: 26px; }
+  }
+  @media (max-width: 480px) {
+    .cats-grid { grid-template-columns: repeat(2, 1fr); }
+    .products-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .hotline { display: none; }
+    .cart-sidebar { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== AUTH MODAL ===== -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal('authModal')">✕</button>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <div class="modal-title">Welcome Back! 👋</div>
+      <div class="modal-sub">Login to your Danii.Store account</div>
+      <div class="modal-err" id="loginErr"></div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="Enter password"></div>
+      <button class="form-btn" onclick="handleLogin()">Login to Account</button>
+      <div class="modal-switch">Don't have an account? <a onclick="switchForm('register')">Create one →</a></div>
+      <div class="modal-switch" style="margin-top:8px;"><a onclick="switchForm('track')" style="color:#888;">📦 Track your order instead</a></div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="registerForm" style="display:none;">
+      <div class="modal-title">Create Account 🎉</div>
+      <div class="modal-sub">Join Danii.Store and start shopping!</div>
+      <div class="modal-err" id="regErr"></div>
+      <div class="form-group"><label>Full Name</label><input type="text" id="regName" placeholder="Your full name"></div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
+      <div class="form-group"><label>Phone Number</label><input type="tel" id="regPhone" placeholder="03XX-XXXXXXX"></div>
+      <div class="form-group"><label>Password</label><input type="password" id="regPass" placeholder="Min 6 characters"></div>
+      <button class="form-btn" onclick="handleRegister()">Create My Account</button>
+      <div class="modal-switch">Already have an account? <a onclick="switchForm('login')">Login →</a></div>
+    </div>
+
+    <!-- TRACK ORDER FORM -->
+    <div id="trackForm" style="display:none;">
+      <div class="modal-title">Track Your Order 📦</div>
+      <div class="modal-sub">Enter your order ID to check status</div>
+      <div class="form-group"><label>Order ID</label><input type="text" id="trackId" placeholder="e.g. SH-2026-78542"></div>
+      <div class="form-group"><label>Email Address</label><input type="email" id="trackEmail" placeholder="Email used at checkout"></div>
+      <button class="form-btn" onclick="handleTrack()">Track Order</button>
+      <div class="track-result" id="trackResult"></div>
+      <div class="modal-switch" style="margin-top:12px;"><a onclick="switchForm('login')">← Back to Login</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CART SIDEBAR ===== -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>🛒 My Cart <span id="cartHeaderCount" style="font-size:13px;color:#ff6b35;font-weight:600;"></span></h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty"><div>🛒</div><p>Your cart is empty.<br>Start adding products!</p></div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none;">
+    <div class="cart-total-row"><span>Subtotal</span><span id="cartSubtotal">Rs 0</span></div>
+    <div class="cart-total-row"><span>Delivery</span><span style="color:#22a85a;">FREE</span></div>
+    <div class="cart-total-main"><span>Total</span><span id="cartTotal">Rs 0</span></div>
+    <button class="cart-checkout" onclick="handleCheckout()">Proceed to Checkout →</button>
+    <button class="cart-continue" onclick="closeCart()">← Continue Shopping</button>
+  </div>
+</div>
+
+<!-- ===== CATEGORY BRANDS MODAL ===== -->
+<div class="cat-modal-overlay" id="catModal">
+  <div class="cat-modal-box">
+    <div class="cat-modal-header">
+      <div class="cat-modal-title" id="catModalTitle">📱 Mobile Phones</div>
+      <button class="cat-modal-close" onclick="closeCatModal()">✕</button>
+    </div>
+    <div class="cat-modal-body">
+      <div class="brand-section-title">Select a Brand</div>
+      <div class="brands-grid" id="catBrandsGrid"></div>
+      <div id="catProductsSection" style="display:none;">
+        <div class="brand-section-title" id="catProductsTitle">Products</div>
+        <div class="cat-products-grid" id="catProductsGrid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ACCOUNT PAGES ===== -->
+<div class="acc-page-overlay" id="accPageOverlay">
+  <div class="acc-page-box">
+    <button class="acc-close" onclick="closeAccPage()">✕</button>
+    <div class="acc-page-header">
+      <button class="acc-page-back" onclick="closeAccPage()">← Back</button>
+      <div class="acc-page-title" id="accPageTitle">My Orders</div>
+    </div>
+    <div class="acc-page-body" id="accPageBody"></div>
+  </div>
+</div>
+
+<!-- ===== TOP BAR ===== -->
+<div class="topbar">
+  <div class="topbar-left">
+    <span>📍 Islamabad Store Open</span>
+    <a onclick="switchForm('track'); openModal('authModal')">Track Order</a>
+    <a onclick="showToast('📍 Store: Blue Area, Islamabad')">Store Location</a>
+  </div>
+  <div id="topbarAuth">
+    <a onclick="switchForm('login'); openModal('authModal')">Login</a>
+    <a onclick="switchForm('register'); openModal('authModal')">Register</a>
+  </div>
+  <div id="topbarUser" style="display:none;">
+    <a id="topbarName" style="color:#ff6b35; font-weight:600;"></a>
+    <a onclick="logoutUser()" style="margin-left:12px;">Logout</a>
+  </div>
+</div>
+
+<!-- ===== HEADER ===== -->
+<div class="header">
+  <div class="danii-logo" onclick="showToast('Welcome to Danii.Store! 🛒')">
+    <svg class="danii-logo-icon" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Bag shape -->
+      <rect x="4" y="16" width="34" height="23" rx="4" fill="#1a1a2e"/>
+      <!-- Bag handle -->
+      <path d="M14 16V13C14 9.686 16.686 7 20 7h2C25.314 7 28 9.686 28 13v3" stroke="#ff6b35" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <!-- D letter -->
+      <text x="12" y="33" font-family="Arial" font-weight="900" font-size="15" fill="#ff6b35">D</text>
+      <!-- Star sparkle -->
+      <circle cx="33" cy="12" r="2" fill="#ff6b35"/>
+      <line x1="33" y1="8" x2="33" y2="10" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="33" y1="14" x2="33" y2="16" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="29" y1="12" x2="31" y2="12" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round"/>
+      <line x1="35" y1="12" x2="37" y2="12" stroke="#ff6b35" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <div class="danii-logo-text">
+      <div class="danii-logo-name">Danii<span>.Store</span></div>
+      <div class="danii-logo-tagline">Pakistan's Tech Hub</div>
+    </div>
+  </div>
+  <div class="search-bar">
+    <input type="text" placeholder="Search for products, brands..." id="searchInput" onkeypress="if(event.key==='Enter') handleSearch()">
+    <button onclick="handleSearch()">🔍</button>
+  </div>
+  <div class="header-actions">
+    <div class="hotline">📞 +92 327 6927349<small>Hotline</small></div>
+
+    <!-- ACCOUNT BUTTON with dropdown -->
+    <div class="header-action" id="accountBtn" onclick="handleAccountClick(event)" style="position:relative;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span id="accountLabel">Account</span>
+      <!-- LOGGED IN DROPDOWN -->
+      <div class="acc-dropdown" id="accDropdown" onclick="event.stopPropagation()">
+        <div class="acc-name" id="dropName"></div>
+        <div class="acc-email" id="dropEmail"></div>
+        <div class="acc-links">
+          <a onclick="closeAccDropdown(); openAccPage('orders')">📦 My Orders</a>
+          <a onclick="closeAccDropdown(); openAccPage('wishlist')">❤️ Wishlist</a>
+          <a onclick="closeAccDropdown(); openAccPage('addresses')">📍 Saved Addresses</a>
+          <a onclick="closeAccDropdown(); openAccPage('settings')">⚙️ Settings</a>
+        </div>
+        <button class="acc-logout" onclick="logoutUser()">Logout ↗</button>
+      </div>
+    </div>
+
+    <div class="header-action cart-badge" onclick="openCart()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span class="badge" id="cartCount">0</span>
+      Cart
+    </div>
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<div class="nav">
+  <div class="nav-inner">
+    <div class="nav-item">
+      <a class="active">🍎 Apple</a>
+      <div class="dropdown">
+        <a onclick="showToast('Opening iPhone 17 Pro Max...')">iPhone 17 Pro Max</a>
+        <a onclick="showToast('Opening iPhone 17 Pro...')">iPhone 17 Pro</a>
+        <a onclick="showToast('Opening iPhone 17 Air...')">iPhone 17 Air</a>
+        <a onclick="showToast('Opening MacBook Pro M5...')">MacBook Pro M5</a>
+        <a onclick="showToast('Opening MacBook Air M5...')">MacBook Air M5</a>
+        <a onclick="showToast('Opening iPad Pro M5...')">iPad Pro M5</a>
+        <a onclick="showToast('Opening Apple Watch Series 11...')">Apple Watch Series 11</a>
+        <a onclick="showToast('Opening AirPods...')">AirPods</a>
+        <a onclick="showToast('Opening iTunes Cards...')">iTunes Cards</a>
+        <a onclick="showToast('Opening Apple TV...')">Apple TV</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a>📱 Mobile Phones</a>
+      <div class="dropdown">
+        <a onclick="showToast('Opening Samsung phones...')">Samsung</a>
+        <a onclick="showToast('Opening Apple iPhone...')">Apple iPhone</a>
+        <a onclick="showToast('Opening Xiaomi...')">Xiaomi Mi</a>
+        <a onclick="showToast('Opening Vivo...')">Vivo</a>
+        <a onclick="showToast('Opening Oppo...')">Oppo</a>
+        <a onclick="showToast('Opening Infinix...')">Infinix</a>
+        <a onclick="showToast('Opening Tecno...')">Tecno</a>
+        <a onclick="showToast('Opening Realme...')">Realme</a>
+        <a onclick="showToast('Opening Nokia...')">Nokia</a>
+        <a onclick="showToast('Opening Mobile Accessories...')">Mobile Accessories</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a>💻 Laptops & PC</a>
+      <div class="dropdown">
+        <a onclick="showToast('Opening Gaming Laptops...')">Gaming Laptops</a>
+        <a onclick="showToast('Opening Dell...')">Dell</a>
+        <a onclick="showToast('Opening HP...')">HP</a>
+        <a onclick="showToast('Opening Lenovo...')">Lenovo</a>
+        <a onclick="showToast('Opening Asus...')">Asus</a>
+        <a onclick="showToast('Opening Acer...')">Acer</a>
+        <a onclick="showToast('Opening MSI...')">MSI</a>
+        <a onclick="showToast('Opening Desktop PC...')">Desktop PC</a>
+        <a onclick="showToast('Opening Monitors...')">Computer Monitors</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a>📺 TV & Projectors</a>
+      <div class="dropdown">
+        <a onclick="showToast('Opening Samsung LED...')">Samsung LED</a>
+        <a onclick="showToast('Opening LG...')">LG</a>
+        <a onclick="showToast('Opening Sony...')">Sony</a>
+        <a onclick="showToast('Opening TCL...')">TCL</a>
+        <a onclick="showToast('Opening Projectors...')">Projectors</a>
+        <a onclick="showToast('Opening Smart TV Boxes...')">Smart TV Boxes</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a>🎮 Video Games</a>
+      <div class="dropdown">
+        <a onclick="showToast('Opening PlayStation 5...')">PlayStation 5</a>
+        <a onclick="showToast('Opening Xbox...')">Xbox</a>
+        <a onclick="showToast('Opening Nintendo Switch...')">Nintendo Switch</a>
+        <a onclick="showToast('Opening Steam Deck...')">Steam Deck</a>
+        <a onclick="showToast('Opening PS5 Games...')">PS5 Games</a>
+        <a onclick="showToast('Opening Gaming Accessories...')">Gaming Accessories</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a>🔊 Audio</a>
+      <div class="dropdown">
+        <a onclick="showToast('Opening Headphones...')">Headphones</a>
+        <a onclick="showToast('Opening Earbuds...')">Earbuds</a>
+        <a onclick="showToast('Opening Speakers...')">Bluetooth Speakers</a>
+        <a onclick="showToast('Opening Soundbars...')">Soundbars</a>
+        <a onclick="showToast('Opening Microphones...')">Microphones</a>
+        <a onclick="showToast('Opening Home Theatres...')">Home Theatres</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a>⌚ Smart Watches</a>
+      <div class="dropdown">
+        <a onclick="showToast('Opening Apple Watch...')">Apple Watch</a>
+        <a onclick="showToast('Opening Samsung Watch...')">Samsung</a>
+        <a onclick="showToast('Opening Amazfit...')">Amazfit</a>
+        <a onclick="showToast('Opening Huawei Watch...')">Huawei</a>
+        <a onclick="showToast('Opening Xiaomi Watch...')">Xiaomi</a>
+      </div>
+    </div>
+    <div class="nav-item">
+      <a>🏠 Appliances</a>
+      <div class="dropdown">
+        <a onclick="showToast('Opening Air Conditioners...')">Air Conditioners</a>
+        <a onclick="showToast('Opening Refrigerators...')">Refrigerators</a>
+        <a onclick="showToast('Opening Washing Machines...')">Washing Machines</a>
+        <a onclick="showToast('Opening Air Fryers...')">Air Fryers</a>
+        <a onclick="showToast('Opening Vacuum Cleaners...')">Vacuum Cleaners</a>
+      </div>
+    </div>
+    <div class="nav-item"><a class="nav-deals" onclick="showToast('🔥 Loading Daily Deals...')">🔥 Daily Deals</a></div>
+    <div class="nav-item"><a onclick="showToast('💳 Instalment Plans — 0% Markup!')">💳 Instalments</a></div>
+    <div class="nav-item"><a onclick="showToast('📞 Call: +92 327 6927349')">📞 Contact</a></div>
+  </div>
+</div>
+
+<!-- ===== HERO SLIDER ===== -->
+<div class="hero">
+  <div class="slides" id="slides">
+    <div class="slide slide-1">
+      <div class="slide-content">
+        <span class="slide-badge">✨ New Arrival</span>
+        <div class="slide-title">iPhone <em>17 Pro Max</em></div>
+        <div class="slide-sub">Titanium. So strong. So light. So Pro.</div>
+        <button class="slide-btn" onclick="showToast('Opening iPhone 17 Pro Max page...')">Shop Now →</button>
+      </div>
+      <div class="slide-img"><img src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=500&q=85" alt="iPhone 17 Pro Max" onerror="this.style.display='none'"></div>
+    </div>
+    <div class="slide slide-2">
+      <div class="slide-content">
+        <span class="slide-badge">💻 Best Seller</span>
+        <div class="slide-title">MacBook <em>Air M5</em></div>
+        <div class="slide-sub">Supercharged by the all-new M5 chip.</div>
+        <button class="slide-btn" onclick="showToast('Opening MacBook Air M5 page...')">Explore →</button>
+      </div>
+      <div class="slide-img"><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&q=85" alt="MacBook Air M5" onerror="this.style.display='none'"></div>
+    </div>
+    <div class="slide slide-3">
+      <div class="slide-content">
+        <span class="slide-badge">🎮 Gaming</span>
+        <div class="slide-title">PlayStation <em>5 Slim</em></div>
+        <div class="slide-sub">Best gaming experience. Available now in Pakistan.</div>
+        <button class="slide-btn" onclick="showToast('Opening PS5 page...')">Explore →</button>
+      </div>
+      <div class="slide-img"><img src="https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=500&q=85" alt="PlayStation 5" onerror="this.style.display='none'"></div>
+    </div>
+  </div>
+  <button class="slide-arrow left" onclick="changeSlide(-1)">&#8249;</button>
+  <button class="slide-arrow right" onclick="changeSlide(1)">&#8250;</button>
+  <div class="slide-dots">
+    <button class="dot active" onclick="goSlide(0)"></button>
+    <button class="dot" onclick="goSlide(1)"></button>
+    <button class="dot" onclick="goSlide(2)"></button>
+  </div>
+</div>
+
+<!-- ===== PROMO STRIPS ===== -->
+<div class="promos">
+  <div class="promo-card">
+    <div class="promo-icon">🚚</div>
+    <div><div class="promo-title">Free Delivery</div><div class="promo-sub">On orders over Rs 5,000</div></div>
+  </div>
+  <div class="promo-card">
+    <div class="promo-icon">🔒</div>
+    <div><div class="promo-title">Secure Payment</div><div class="promo-sub">100% secure transactions</div></div>
+  </div>
+  <div class="promo-card">
+    <div class="promo-icon">↩️</div>
+    <div><div class="promo-title">Easy Returns</div><div class="promo-sub">7-day hassle-free return policy</div></div>
+  </div>
+</div>
+
+<!-- ===== CATEGORIES ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">Shop By Category</div>
+    <span class="view-all" onclick="showToast('Opening all categories...')">View All →</span>
+  </div>
+  <div class="cats-grid">
+    <div class="cat-card" onclick="openCatModal('mobile')"><span class="cat-icon">📱</span><div class="cat-name">Mobile Phones</div></div>
+    <div class="cat-card" onclick="openCatModal('laptop')"><span class="cat-icon">💻</span><div class="cat-name">Laptops</div></div>
+    <div class="cat-card" onclick="openCatModal('tv')"><span class="cat-icon">📺</span><div class="cat-name">TV & LED</div></div>
+    <div class="cat-card" onclick="openCatModal('gaming')"><span class="cat-icon">🎮</span><div class="cat-name">Gaming</div></div>
+    <div class="cat-card" onclick="openCatModal('audio')"><span class="cat-icon">🔊</span><div class="cat-name">Audio</div></div>
+    <div class="cat-card" onclick="openCatModal('watch')"><span class="cat-icon">⌚</span><div class="cat-name">Smart Watches</div></div>
+    <div class="cat-card" onclick="openCatModal('camera')"><span class="cat-icon">📷</span><div class="cat-name">Cameras</div></div>
+    <div class="cat-card" onclick="openCatModal('appliance')"><span class="cat-icon">🏠</span><div class="cat-name">Appliances</div></div>
+    <div class="cat-card" onclick="openCatModal('printer')"><span class="cat-icon">🖨️</span><div class="cat-name">Printers</div></div>
+    <div class="cat-card" onclick="openCatModal('network')"><span class="cat-icon">📡</span><div class="cat-name">Networking</div></div>
+    <div class="cat-card" onclick="openCatModal('storage')"><span class="cat-icon">💾</span><div class="cat-name">Storage</div></div>
+    <div class="cat-card" onclick="openCatModal('accessories')"><span class="cat-icon">🎵</span><div class="cat-name">More</div></div>
+  </div>
+</div>
+
+<!-- ===== TOP BRANDS ===== -->
+<div class="section" style="padding-top:0;">
+  <div class="section-header">
+    <div class="section-title">Top Brands</div>
+    <span class="view-all" onclick="showToast('Opening all brands...')">All Brands →</span>
+  </div>
+  <div class="brands-row">
+    <div class="brand-pill" onclick="showToast('Opening Apple products...')">🍎 Apple</div>
+    <div class="brand-pill" onclick="showToast('Opening Samsung products...')">Samsung</div>
+    <div class="brand-pill" onclick="showToast('Opening HP products...')">HP</div>
+    <div class="brand-pill" onclick="showToast('Opening Microsoft products...')">Microsoft</div>
+    <div class="brand-pill" onclick="showToast('Opening Sony products...')">Sony</div>
+    <div class="brand-pill" onclick="showToast('Opening Logitech products...')">Logitech</div>
+    <div class="brand-pill" onclick="showToast('Opening Razer products...')">Razer</div>
+    <div class="brand-pill" onclick="showToast('Opening Dell products...')">Dell</div>
+    <div class="brand-pill" onclick="showToast('Opening Xiaomi products...')">Xiaomi</div>
+    <div class="brand-pill" onclick="showToast('Opening Asus products...')">Asus</div>
+    <div class="brand-pill" onclick="showToast('Opening LG products...')">LG</div>
+    <div class="brand-pill" onclick="showToast('Opening Huawei products...')">Huawei</div>
+    <div class="brand-pill" onclick="showToast('Opening Lenovo products...')">Lenovo</div>
+    <div class="brand-pill" onclick="showToast('Opening Canon products...')">Canon</div>
+    <div class="brand-pill" onclick="showToast('Opening Nikon products...')">Nikon</div>
+  </div>
+</div>
+
+<!-- ===== FEATURED PRODUCTS ===== -->
+<div class="section" style="padding-top:0;">
+  <div class="section-header">
+    <div class="section-title">🔥 Hot Deals</div>
+    <span class="view-all" onclick="showToast('Opening all deals...')">See All Deals →</span>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="filterTab(this,'all')">All</button>
+    <button class="tab" onclick="filterTab(this,'mobile')">Mobile</button>
+    <button class="tab" onclick="filterTab(this,'laptop')">Laptops</button>
+    <button class="tab" onclick="filterTab(this,'gaming')">Gaming</button>
+    <button class="tab" onclick="filterTab(this,'audio')">Audio</button>
+    <button class="tab" onclick="filterTab(this,'watch')">Watches</button>
+    <button class="tab" onclick="filterTab(this,'appliance')">Appliances</button>
+  </div>
+  <div class="products-grid" id="productsGrid">
+    <div class="product-card" data-cat="mobile">
+      <div class="product-img"><span class="product-badge">-10%</span><img src="https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=400&q=80" alt="Samsung Galaxy S26" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&q=80'"></div>
+      <div class="product-info">
+        <div class="product-brand">Samsung</div>
+        <div class="product-name">Galaxy S26 12GB 512GB</div>
+        <div><span class="product-price">Rs 319,999</span><span class="product-old">Rs 356,999</span></div>
+      </div>
+      <div class="product-actions">
+        <button class="btn-cart" onclick="addToCart(this,'Samsung Galaxy S26','📱',319999)">Add to Cart 🛒</button>
+        <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+      </div>
+    </div>
+    <div class="product-card" data-cat="laptop">
+      <div class="product-img"><span class="product-badge new-badge">NEW</span><img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&q=80" alt="MacBook Air M5" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80'"></div>
+      <div class="product-info">
+        <div class="product-brand">Apple</div>
+        <div class="product-name">MacBook Air M5 13-inch</div>
+        <div><span class="product-price">Rs 389,999</span></div>
+      </div>
+      <div class="product-actions">
+        <button class="btn-cart" onclick="addToCart(this,'MacBook Air M5','💻',389999)">Add to Cart 🛒</button>
+        <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+      </div>
+    </div>
+    <div class="product-card" data-cat="watch">
+      <div class="product-img"><span class="product-badge">-38%</span><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80" alt="Huawei Watch GT6 Pro" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=400&q=80'"></div>
+      <div class="product-info">
+        <div class="product-brand">Huawei</div>
+        <div class="product-name">Watch GT6 Pro 46mm</div>
+        <div><span class="product-price">Rs 79,999</span><span class="product-old">Rs 129,999</span></div>
+      </div>
+      <div class="product-actions">
+        <button class="btn-cart" onclick="addToCart(this,'Huawei Watch GT6 Pro','⌚',79999)">Add to Cart 🛒</button>
+        <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+      </div>
+    </div>
+    <div class="product-card" data-cat="gaming">
+      <div class="product-img"><span class="product-badge hot-badge">HOT</span><img src="https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=400&q=80" alt="PlayStation 5" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1622297845775-5ff3fef71d13?w=400&q=80'"></div>
+      <div class="product-info">
+        <div class="product-brand">Sony</div>
+        <div class="product-name">PlayStation 5 Console</div>
+        <div><span class="product-price">Rs 149,999</span></div>
+      </div>
+      <div class="product-actions">
+        <button class="btn-cart" onclick="addToCart(this,'PlayStation 5','🎮',149999)">Add to Cart 🛒</button>
+        <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+      </div>
+    </div>
+    <div class="product-card" data-cat="audio">
+      <div class="product-img"><span class="product-badge">-32%</span><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80" alt="Headset" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1484704849700-f032a568e944?w=400&q=80'"></div>
+      <div class="product-info">
+        <div class="product-brand">Plantronics</div>
+        <div class="product-name">Blackwire C5220 Headset</div>
+        <div><span class="product-price">Rs 25,999</span><span class="product-old">Rs 37,999</span></div>
+      </div>
+      <div class="product-actions">
+        <button class="btn-cart" onclick="addToCart(this,'Plantronics C5220','🔊',25999)">Add to Cart 🛒</button>
+        <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+      </div>
+    </div>
+    <div class="product-card" data-cat="mobile">
+      <div class="product-img"><span class="product-badge">-7%</span><img src="https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=400&q=80" alt="Samsung Galaxy S26 Plus" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=400&q=80'"></div>
+      <div class="product-info">
+        <div class="product-brand">Samsung</div>
+        <div class="product-name">Galaxy S26 Plus 12GB 512GB</div>
+        <div><span class="product-price">Rs 379,999</span><span class="product-old">Rs 409,999</span></div>
+      </div>
+      <div class="product-actions">
+        <button class="btn-cart" onclick="addToCart(this,'Galaxy S26 Plus','📱',379999)">Add to Cart 🛒</button>
+        <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+      </div>
+    </div>
+    <div class="product-card" data-cat="laptop">
+      <div class="product-img"><span class="product-badge">-22%</span><img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400&q=80" alt="Hardware Wallet" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400&q=80'"></div>
+      <div class="product-info">
+        <div class="product-brand">Ledger</div>
+        <div class="product-name">Nano Gen 5 Crypto Hardware Wallet</div>
+        <div><span class="product-price">Rs 69,999</span><span class="product-old">Rs 89,999</span></div>
+      </div>
+      <div class="product-actions">
+        <button class="btn-cart" onclick="addToCart(this,'Ledger Nano Gen 5','💻',69999)">Add to Cart 🛒</button>
+        <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+      </div>
+    </div>
+    <div class="product-card" data-cat="appliance">
+      <div class="product-img"><span class="product-badge">-23%</span><img src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&q=80" alt="Air Purifier" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80'"></div>
+      <div class="product-info">
+        <div class="product-brand">Xiaomi</div>
+        <div class="product-name">Smart Air Purifier 4</div>
+        <div><span class="product-price">Rs 57,999</span><span class="product-old">Rs 74,999</span></div>
+      </div>
+      <div class="product-actions">
+        <button class="btn-cart" onclick="addToCart(this,'Xiaomi Air Purifier 4','🌬️',57999)">Add to Cart 🛒</button>
+        <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BANNERS ===== -->
+<div class="double-banner">
+  <div class="banner banner-1">
+    <div class="banner-text">
+      <h3>🎮 Gaming Zone</h3>
+      <p>PS5, Xbox & Nintendo — all in one place</p>
+      <button onclick="showToast('Opening Gaming Zone...')">Explore Gaming →</button>
+    </div>
+    <div class="banner-img"><img src="https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=300&q=80" alt="Gaming" style="width:120px;height:120px;object-fit:contain;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.4));border-radius:8px;" onerror="this.outerHTML='🕹️'"></div>
+  </div>
+  <div class="banner banner-2">
+    <div class="banner-text">
+      <h3>💳 Easy Instalments</h3>
+      <p>0% markup on selected products. Apply now!</p>
+      <button onclick="showToast('Opening Instalment Plans...')">Apply Now →</button>
+    </div>
+    <div class="banner-img"><img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&q=80" alt="Instalments" style="width:120px;height:120px;object-fit:contain;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.4));border-radius:8px;" onerror="this.outerHTML='💳'"></div>
+  </div>
+</div>
+
+<!-- ===== NEWSLETTER ===== -->
+<div class="newsletter">
+  <h2>📧 Stay Updated with Danii.Store</h2>
+  <p>Subscribe for exclusive deals, new arrivals and special offers</p>
+  <div class="nl-form">
+    <input type="email" placeholder="Enter your email address" id="emailInput">
+    <button onclick="handleSubscribe()">Subscribe</button>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<div class="footer">
+  <div class="footer-grid">
+    <div class="footer-col">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+        <svg width="32" height="32" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="16" width="34" height="23" rx="4" fill="#ff6b35"/>
+          <path d="M14 16V13C14 9.686 16.686 7 20 7h2C25.314 7 28 9.686 28 13v3" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <text x="12" y="33" font-family="Arial" font-weight="900" font-size="15" fill="#fff">D</text>
+        </svg>
+        <div class="footer-logo">Danii<span>.Store</span></div>
+      </div>
+      <p>Pakistan's leading electronics store. Genuine products, best prices, fast delivery nationwide.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <a onclick="showToast('Opening About Us...')">About Us</a>
+      <a onclick="showToast('📞 Call: +92 327 6927349')">Contact Us</a>
+      <a onclick="switchForm('track'); openModal('authModal')">Track Order</a>
+      <a onclick="showToast('📍 Store: Blue Area, Islamabad')">Store Location</a>
+      <a onclick="showToast('🔥 Loading Daily Deals...')">Daily Deals</a>
+      <a onclick="showToast('💳 Instalment Plans — 0% Markup!')">Instalments</a>
+    </div>
+    <div class="footer-col">
+      <h4>Top Categories</h4>
+      <a onclick="showToast('Opening Mobile Phones...')">Mobile Phones</a>
+      <a onclick="showToast('Opening Laptops...')">Laptops & Computers</a>
+      <a onclick="showToast('Opening TV & LED...')">TV & LED</a>
+      <a onclick="showToast('Opening Gaming...')">Gaming Consoles</a>
+      <a onclick="showToast('Opening Audio...')">Audio Devices</a>
+      <a onclick="showToast('Opening Appliances...')">Home Appliances</a>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <a onclick="showToast('Opening FAQs...')">FAQs</a>
+      <a onclick="showToast('Opening Return Policy...')">Return Policy</a>
+      <a onclick="showToast('Opening Warranty Policy...')">Warranty Policy</a>
+      <a onclick="showToast('Opening Privacy Policy...')">Privacy Policy</a>
+      <a onclick="showToast('Opening Terms of Service...')">Terms of Service</a>
+      <a onclick="showToast('📞 Calling: +92 327 6927349')">📞 +92 327 6927349</a>
+      <a onclick="showToast('✉️ Email: Danishsahu185@gmail.com')">✉️ Danishsahu185@gmail.com</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 Danii.Store. All rights reserved.</span>
+    <span>Made with ❤️ in Pakistan 🇵🇰</span>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ===== API CONFIG =====
+  // Railway deploy ke baad: apna Railway URL yahan lagao
+  // Example: 'https://danii-store-backend-production.up.railway.app'
+  const RAILWAY_BACKEND_URL = 'https://YOUR-PROJECT.up.railway.app';
+  const API_BASE = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api'
+    : RAILWAY_BACKEND_URL + '/api';
+
+  async function apiCall(endpoint, method = 'GET', body = null) {
+    const token = localStorage.getItem('sh_token');
+    const opts = {
+      method,
+      headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) }
+    };
+    if (body) opts.body = JSON.stringify(body);
+    const res = await fetch(API_BASE + endpoint, opts);
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.message || 'Something went wrong');
+    return data;
+  }
+
+  // ===== STATE =====
+  let currentUser = JSON.parse(localStorage.getItem('sh_user') || 'null');
+  let cart = JSON.parse(localStorage.getItem('sh_cart') || '[]');
+
+  // ===== INIT =====
+  function init() {
+    updateAuthUI();
+    updateCartUI();
+    // Verify token on load
+    const token = localStorage.getItem('sh_token');
+    if (token && currentUser) {
+      apiCall('/auth/me').then(user => {
+        currentUser = user;
+        localStorage.setItem('sh_user', JSON.stringify(user));
+        updateAuthUI();
+      }).catch(() => {
+        // Token expired, clear session
+        currentUser = null;
+        localStorage.removeItem('sh_token');
+        localStorage.removeItem('sh_user');
+        updateAuthUI();
+      });
+    }
+  }
+
+  // ===== AUTH =====
+  function updateAuthUI() {
+    const loggedIn = !!currentUser;
+    document.getElementById('topbarAuth').style.display = loggedIn ? 'none' : 'block';
+    document.getElementById('topbarUser').style.display = loggedIn ? 'block' : 'none';
+    if (loggedIn) {
+      document.getElementById('topbarName').textContent = '👋 ' + currentUser.name.split(' ')[0];
+      document.getElementById('accountLabel').textContent = currentUser.name.split(' ')[0];
+      document.getElementById('dropName').textContent = currentUser.name;
+      document.getElementById('dropEmail').textContent = currentUser.email;
+    } else {
+      document.getElementById('accountLabel').textContent = 'Account';
+    }
+  }
+
+  function handleAccountClick(e) {
+    e.stopPropagation();
+    if (currentUser) {
+      const dd = document.getElementById('accDropdown');
+      dd.classList.toggle('open');
+    } else {
+      switchForm('login');
+      openModal('authModal');
+    }
+  }
+
+  function closeAccDropdown() {
+    document.getElementById('accDropdown').classList.remove('open');
+  }
+
+  document.addEventListener('click', function() { closeAccDropdown(); });
+
+  async function handleLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass = document.getElementById('loginPass').value.trim();
+    const errEl = document.getElementById('loginErr');
+    const btn = document.querySelector('#loginForm .form-btn');
+    errEl.classList.remove('show');
+
+    if (!email || !pass) { errEl.textContent = 'Please fill in all fields.'; errEl.classList.add('show'); return; }
+    if (!email.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.classList.add('show'); return; }
+
+    btn.textContent = 'Signing in...';
+    btn.disabled = true;
+    try {
+      const data = await apiCall('/auth/login', 'POST', { email, password: pass });
+      localStorage.setItem('sh_token', data.token);
+      currentUser = data.user;
+      localStorage.setItem('sh_user', JSON.stringify(currentUser));
+      updateAuthUI();
+      closeModal('authModal');
+      showToast('✅ Welcome back, ' + data.user.name.split(' ')[0] + '!');
+    } catch (err) {
+      errEl.textContent = err.message || 'Invalid email or password.';
+      errEl.classList.add('show');
+    } finally {
+      btn.textContent = 'Sign In';
+      btn.disabled = false;
+    }
+  }
+
+  async function handleRegister() {
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const phone = document.getElementById('regPhone').value.trim();
+    const pass = document.getElementById('regPass').value.trim();
+    const errEl = document.getElementById('regErr');
+    const btn = document.querySelector('#registerForm .form-btn');
+    errEl.classList.remove('show');
+
+    if (!name || !email || !phone || !pass) { errEl.textContent = 'Please fill in all fields.'; errEl.classList.add('show'); return; }
+    if (!email.includes('@')) { errEl.textContent = 'Please enter a valid email address.'; errEl.classList.add('show'); return; }
+    if (pass.length < 6) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.classList.add('show'); return; }
+
+    btn.textContent = 'Creating account...';
+    btn.disabled = true;
+    try {
+      const data = await apiCall('/auth/register', 'POST', { name, email, phone, password: pass });
+      localStorage.setItem('sh_token', data.token);
+      currentUser = data.user;
+      localStorage.setItem('sh_user', JSON.stringify(currentUser));
+      updateAuthUI();
+      closeModal('authModal');
+      showToast('🎉 Account created! Welcome, ' + name.split(' ')[0] + '!');
+    } catch (err) {
+      errEl.textContent = err.message || 'Registration failed. Please try again.';
+      errEl.classList.add('show');
+    } finally {
+      btn.textContent = 'Create Account';
+      btn.disabled = false;
+    }
+  }
+
+  function logoutUser() {
+    currentUser = null;
+    localStorage.removeItem('sh_user');
+    localStorage.removeItem('sh_token');
+    closeAccDropdown();
+    updateAuthUI();
+    showToast('👋 Logged out successfully!');
+  }
+
+  // ===== TRACK ORDER (API) =====
+  async function handleTrack() {
+    const id = document.getElementById('trackId').value.trim();
+    const email = document.getElementById('trackEmail').value.trim();
+    const res = document.getElementById('trackResult');
+    if (!id || !email) { showToast('Please fill in both fields'); return; }
+
+    res.innerHTML = '<div style="text-align:center;padding:20px;color:#888;">🔍 Tracking your order...</div>';
+    res.classList.add('show');
+
+    try {
+      const order = await apiCall('/orders/track/' + id);
+      const statusColors = { Pending:'#888', Confirmed:'#0f6e56', Processing:'#ff6b35', Shipped:'#0077cc', 'Out for Delivery':'#ff9900', Delivered:'#22a85a', Cancelled:'#cc0000' };
+      const steps = order.timeline || [];
+      res.innerHTML = `
+        <div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:10px;">Order: ${order.orderId}</div>
+        <div style="margin-bottom:10px;"><span style="background:${statusColors[order.status]||'#888'};color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;">${order.status}</span></div>
+        ${steps.map(s => `
+          <div class="track-step">
+            <div class="track-dot done"></div>
+            <div class="track-info"><strong>${s.status}</strong><span>${s.message} — ${new Date(s.timestamp).toLocaleString('en-PK')}</span></div>
+          </div>`).join('')}
+      `;
+    } catch (err) {
+      res.innerHTML = `<div style="text-align:center;padding:16px;color:#cc4a1e;">❌ ${err.message}</div>`;
+    }
+  }
+
+  // ===== CHECKOUT (API) =====
+  async function handleCheckout() {
+    if (!currentUser) {
+      closeCart();
+      switchForm('login');
+      openModal('authModal');
+      showToast('⚠️ Please login to checkout');
+      return;
+    }
+    if (cart.length === 0) { showToast('⚠️ Cart is empty!'); return; }
+
+    showToast('🛒 Processing your order...');
+
+    const subtotal = cart.reduce((s, i) => s + i.qty * i.price, 0);
+    const shippingFee = 200;
+    const items = cart.map(i => ({ productId: i.name, name: i.name, price: i.price, quantity: i.qty, image: i.emoji }));
+    // Use first saved address or fallback
+    const shipping = {
+      name: currentUser.name,
+      address: 'Default Address',
+      city: 'Islamabad',
+      phone: currentUser.phone || '+92 327 6927349'
+    };
+
+    try {
+      const data = await apiCall('/orders', 'POST', { items, shipping, subtotal, shippingFee, total: subtotal + shippingFee });
+      cart = [];
+      localStorage.setItem('sh_cart', JSON.stringify(cart));
+      updateCartUI();
+      closeCart();
+      showToast('🎉 Order placed! ID: ' + data.order.orderId);
+    } catch (err) {
+      showToast('❌ ' + (err.message || 'Order failed. Please try again.'));
+    }
+  }
+
+  // ===== SAVE SETTINGS (API) =====
+  async function saveSettings() {
+    if (!currentUser) return;
+    const name = document.getElementById('setName')?.value.trim();
+    const email = document.getElementById('setEmail')?.value.trim();
+    const phone = document.getElementById('setPhone')?.value.trim();
+    try {
+      const data = await apiCall('/auth/profile', 'PUT', { name, email, phone });
+      currentUser = data.user;
+      localStorage.setItem('sh_user', JSON.stringify(currentUser));
+      updateAuthUI();
+      showToast('✅ Settings saved successfully!');
+    } catch (err) {
+      showToast('❌ ' + err.message);
+    }
+  }
+
+  // ===== CART =====
+  function addToCart(btn, name, emoji, price) {
+    const existing = cart.find(i => i.name === name);
+    if (existing) {
+      existing.qty++;
+    } else {
+      cart.push({ name, emoji, price, qty: 1 });
+    }
+    localStorage.setItem('sh_cart', JSON.stringify(cart));
+    updateCartUI();
+
+    btn.textContent = '✓ Added!';
+    btn.classList.add('added');
+    setTimeout(() => { btn.textContent = 'Add to Cart 🛒'; btn.classList.remove('added'); }, 1500);
+    showToast('✅ ' + name + ' added to cart!');
+  }
+
+  function removeFromCart(idx) {
+    cart.splice(idx, 1);
+    localStorage.setItem('sh_cart', JSON.stringify(cart));
+    updateCartUI();
+  }
+
+  function changeQty(idx, delta) {
+    cart[idx].qty += delta;
+    if (cart[idx].qty <= 0) { removeFromCart(idx); return; }
+    localStorage.setItem('sh_cart', JSON.stringify(cart));
+    updateCartUI();
+  }
+
+  function updateCartUI() {
+    const total = cart.reduce((s, i) => s + i.qty, 0);
+    const subtotal = cart.reduce((s, i) => s + i.qty * i.price, 0);
+    document.getElementById('cartCount').textContent = total;
+    document.getElementById('cartHeaderCount').textContent = total > 0 ? '(' + total + ' items)' : '';
+
+    const itemsEl = document.getElementById('cartItems');
+    const footerEl = document.getElementById('cartFooter');
+
+    if (cart.length === 0) {
+      itemsEl.innerHTML = '<div class="cart-empty"><div>🛒</div><p>Your cart is empty.<br>Start adding products!</p></div>';
+      footerEl.style.display = 'none';
+    } else {
+      footerEl.style.display = 'block';
+      itemsEl.innerHTML = cart.map((item, idx) => `
+        <div class="cart-item">
+          <div class="cart-item-img">${item.emoji}</div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">Rs ${(item.price).toLocaleString()}</div>
+            <div class="cart-item-qty">
+              <button class="qty-btn" onclick="changeQty(${idx},-1)">−</button>
+              <span class="qty-num">${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty(${idx},1)">+</button>
+            </div>
+          </div>
+          <button class="cart-item-del" onclick="removeFromCart(${idx})">🗑</button>
+        </div>
+      `).join('');
+      document.getElementById('cartSubtotal').textContent = 'Rs ' + subtotal.toLocaleString();
+      document.getElementById('cartTotal').textContent = 'Rs ' + subtotal.toLocaleString();
+    }
+  }
+
+  function openCart() {
+    document.getElementById('cartSidebar').classList.add('open');
+    document.getElementById('cartOverlay').classList.add('open');
+  }
+  function closeCart() {
+    document.getElementById('cartSidebar').classList.remove('open');
+    document.getElementById('cartOverlay').classList.remove('open');
+  }
+
+  function handleCheckout() {
+    if (!currentUser) {
+      closeCart();
+      switchForm('login');
+      openModal('authModal');
+      showToast('⚠️ Please login to checkout');
+      return;
+    }
+    if (cart.length === 0) { showToast('⚠️ Cart is empty!'); return; }
+    showToast('🛒 Processing your order...');
+    setTimeout(() => {
+      // Save order to localStorage
+      const orders = JSON.parse(localStorage.getItem('sh_orders') || '[]');
+      const orderId = 'SH-' + new Date().getFullYear() + '-' + Math.floor(10000 + Math.random()*90000);
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+      const total = cart.reduce((s, i) => s + i.qty * i.price, 0);
+      const items = cart.map(i => ({ e: i.emoji, n: i.name }));
+      orders.unshift({ id: orderId, date: dateStr, status:'processing', statusLabel:'Processing', items, total });
+      localStorage.setItem('sh_orders', JSON.stringify(orders));
+
+      cart = [];
+      localStorage.setItem('sh_cart', JSON.stringify(cart));
+      updateCartUI();
+      closeCart();
+      showToast('🎉 Order placed! ID: ' + orderId);
+    }, 1800);
+  }
+
+  // ===== WISHLIST =====
+  function toggleWish(btn) {
+    const isActive = btn.classList.toggle('active');
+    btn.textContent = isActive ? '❤️' : '🤍';
+    showToast(isActive ? '❤️ Added to wishlist!' : '💔 Removed from wishlist');
+  }
+
+  // ===== MODAL =====
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  document.getElementById('authModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal('authModal');
+  });
+
+  function switchForm(type) {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'none';
+    document.getElementById('trackForm').style.display = 'none';
+    document.getElementById(type + 'Form').style.display = 'block';
+    document.getElementById('loginErr') && (document.getElementById('loginErr').classList.remove('show'));
+    document.getElementById('regErr') && (document.getElementById('regErr').classList.remove('show'));
+    document.getElementById('trackResult') && (document.getElementById('trackResult').classList.remove('show'));
+  }
+
+  // ===== SLIDER =====
+  let curr = 0;
+  const total = 3;
+  let autoSlide = setInterval(() => changeSlide(1), 4000);
+
+  function goSlide(n) {
+    curr = n;
+    document.getElementById('slides').style.transform = 'translateX(-' + (curr * 33.333) + '%)';
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === curr));
+  }
+  function changeSlide(dir) {
+    goSlide((curr + dir + total) % total);
+    clearInterval(autoSlide);
+    autoSlide = setInterval(() => changeSlide(1), 4000);
+  }
+
+  // ===== TABS/FILTER =====
+  function filterTab(el, cat) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.querySelectorAll('#productsGrid .product-card').forEach(card => {
+      card.style.display = (cat === 'all' || card.dataset.cat === cat) ? 'block' : 'none';
+    });
+  }
+
+  // ===== SEARCH =====
+  function handleSearch() {
+    const q = document.getElementById('searchInput').value.trim();
+    if (q) showToast('🔍 Searching for: ' + q);
+    else showToast('Please enter a search term');
+  }
+
+  // ===== NEWSLETTER =====
+  function handleSubscribe() {
+    const email = document.getElementById('emailInput').value.trim();
+    if (email && email.includes('@')) {
+      showToast('🎉 Subscribed successfully! Check your inbox.');
+      document.getElementById('emailInput').value = '';
+    } else {
+      showToast('⚠️ Please enter a valid email address');
+    }
+  }
+
+  // ===== TOAST =====
+  let toastTimer;
+  function showToast(msg) {
+    clearTimeout(toastTimer);
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  // ===== CATEGORY DATA =====
+  const categoryData = {
+    mobile: {
+      title: '📱 Mobile Phones',
+      brands: [
+        { logo:'🍎', name:'Apple', count:'15 products', img:'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=300&q=80',
+          products:[
+            {name:'iPhone 17 Pro Max', price:449999, img:'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=300&q=80', badge:'-5%'},
+            {name:'iPhone 17 Pro', price:389999, img:'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=300&q=80', badge:'NEW'},
+            {name:'iPhone 17 Air', price:299999, img:'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=300&q=80', badge:''}
+          ]},
+        { logo:'📱', name:'Samsung', count:'22 products', img:'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=300&q=80',
+          products:[
+            {name:'Galaxy S26 Ultra', price:429999, img:'https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=300&q=80', badge:'-8%'},
+            {name:'Galaxy S26 Plus', price:379999, img:'https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?w=300&q=80', badge:'-7%'},
+            {name:'Galaxy A56', price:119999, img:'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔵', name:'Xiaomi', count:'18 products', img:'https://images.unsplash.com/photo-1567581935884-3349723552ca?w=300&q=80',
+          products:[
+            {name:'Xiaomi 15 Pro', price:169999, img:'https://images.unsplash.com/photo-1567581935884-3349723552ca?w=300&q=80', badge:'-15%'},
+            {name:'Redmi Note 14 Pro', price:69999, img:'https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=300&q=80', badge:''},
+            {name:'POCO X7 Pro', price:79999, img:'https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=300&q=80', badge:'HOT'}
+          ]},
+        { logo:'🟢', name:'Oppo', count:'12 products', img:'https://images.unsplash.com/photo-1519558260268-cde7e03a0152?w=300&q=80',
+          products:[
+            {name:'Oppo Find X8 Pro', price:189999, img:'https://images.unsplash.com/photo-1519558260268-cde7e03a0152?w=300&q=80', badge:'NEW'},
+            {name:'Oppo Reno 13 Pro', price:109999, img:'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=300&q=80', badge:''},
+            {name:'Oppo A3 Pro', price:49999, img:'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔷', name:'Vivo', count:'10 products', img:'https://images.unsplash.com/photo-1512054502232-10a0a035d672?w=300&q=80',
+          products:[
+            {name:'Vivo X200 Pro', price:199999, img:'https://images.unsplash.com/photo-1512054502232-10a0a035d672?w=300&q=80', badge:'NEW'},
+            {name:'Vivo V40 Pro', price:89999, img:'https://images.unsplash.com/photo-1603015236585-ce9e6ded1f6a?w=300&q=80', badge:'-10%'},
+            {name:'Vivo Y300 Pro', price:59999, img:'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=300&q=80', badge:''}
+          ]},
+        { logo:'♾️', name:'Infinix', count:'8 products', img:'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&q=80',
+          products:[
+            {name:'Infinix Zero 40 5G', price:69999, img:'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&q=80', badge:'-12%'},
+            {name:'Infinix Note 40 Pro', price:49999, img:'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=300&q=80', badge:''},
+            {name:'Infinix Hot 50', price:29999, img:'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔺', name:'Tecno', count:'9 products', img:'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=300&q=80',
+          products:[
+            {name:'Tecno Phantom V Fold2', price:119999, img:'https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=300&q=80', badge:'NEW'},
+            {name:'Tecno Camon 30 Pro', price:49999, img:'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&q=80', badge:''},
+            {name:'Tecno Spark 30 Pro', price:29999, img:'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=300&q=80', badge:''}
+          ]},
+        { logo:'🌐', name:'Realme', count:'11 products', img:'https://images.unsplash.com/photo-1603015236585-ce9e6ded1f6a?w=300&q=80',
+          products:[
+            {name:'Realme GT 7 Pro', price:149999, img:'https://images.unsplash.com/photo-1603015236585-ce9e6ded1f6a?w=300&q=80', badge:'-18%'},
+            {name:'Realme 14 Pro Plus', price:79999, img:'https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=300&q=80', badge:''},
+            {name:'Realme C67', price:34999, img:'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=300&q=80', badge:''}
+          ]}
+      ]
+    },
+    laptop: {
+      title: '💻 Laptops & PC',
+      brands: [
+        { logo:'🍎', name:'Apple', count:'6 products', products:[
+            {name:'MacBook Pro M5 14"', price:549999, img:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&q=80', badge:'NEW'},
+            {name:'MacBook Air M5 13"', price:389999, img:'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&q=80', badge:'NEW'},
+            {name:'Mac Mini M5', price:189999, img:'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔵', name:'Dell', count:'14 products', products:[
+            {name:'Dell XPS 15 OLED', price:469999, img:'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=300&q=80', badge:'-10%'},
+            {name:'Dell Inspiron 15 3000', price:129999, img:'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&q=80', badge:''},
+            {name:'Dell G15 Gaming', price:249999, img:'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=300&q=80', badge:'HOT'}
+          ]},
+        { logo:'🔷', name:'HP', count:'16 products', products:[
+            {name:'HP Spectre x360 14"', price:349999, img:'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=300&q=80', badge:'NEW'},
+            {name:'HP Victus 16 Gaming', price:199999, img:'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=300&q=80', badge:'-15%'},
+            {name:'HP 15s-fq5000', price:119999, img:'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&q=80', badge:''}
+          ]},
+        { logo:'🟥', name:'Lenovo', count:'18 products', products:[
+            {name:'ThinkPad X1 Carbon G12', price:429999, img:'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=300&q=80', badge:'NEW'},
+            {name:'Legion 5i Pro Gaming', price:299999, img:'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=300&q=80', badge:'HOT'},
+            {name:'IdeaPad Slim 5', price:139999, img:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔶', name:'Asus', count:'15 products', products:[
+            {name:'ROG Zephyrus G16', price:499999, img:'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=300&q=80', badge:'-5%'},
+            {name:'Asus ZenBook 14 OLED', price:269999, img:'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=300&q=80', badge:'NEW'},
+            {name:'Asus VivoBook 16', price:119999, img:'https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=300&q=80', badge:''}
+          ]},
+        { logo:'⬛', name:'MSI', count:'10 products', products:[
+            {name:'MSI Titan GT77 HX', price:699999, img:'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=300&q=80', badge:''},
+            {name:'MSI Katana 15', price:249999, img:'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=300&q=80', badge:'HOT'},
+            {name:'MSI Thin 15', price:159999, img:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300&q=80', badge:''}
+          ]}
+      ]
+    },
+    watch: {
+      title: '⌚ Smart Watches',
+      brands: [
+        { logo:'🍎', name:'Apple Watch', count:'5 products', products:[
+            {name:'Apple Watch Series 11', price:129999, img:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&q=80', badge:'NEW'},
+            {name:'Apple Watch Ultra 3', price:189999, img:'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=300&q=80', badge:'NEW'},
+            {name:'Apple Watch SE 3', price:69999, img:'https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=300&q=80', badge:''}
+          ]},
+        { logo:'📱', name:'Samsung', count:'6 products', products:[
+            {name:'Galaxy Watch 8 Ultra', price:109999, img:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&q=80', badge:'NEW'},
+            {name:'Galaxy Watch 8', price:79999, img:'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=300&q=80', badge:'-10%'},
+            {name:'Galaxy Fit 3', price:24999, img:'https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=300&q=80', badge:''}
+          ]},
+        { logo:'🌟', name:'Amazfit', count:'8 products', products:[
+            {name:'Amazfit Balance 2', price:39999, img:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&q=80', badge:'-20%'},
+            {name:'Amazfit GTR 5 Pro', price:49999, img:'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=300&q=80', badge:''},
+            {name:'Amazfit Bip 6', price:19999, img:'https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔵', name:'Huawei', count:'7 products', products:[
+            {name:'Watch GT6 Pro 46mm', price:79999, img:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&q=80', badge:'-38%'},
+            {name:'Watch Ultimate 2', price:149999, img:'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=300&q=80', badge:'NEW'},
+            {name:'Band 9', price:14999, img:'https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=300&q=80', badge:''}
+          ]},
+        { logo:'🟠', name:'Xiaomi', count:'9 products', products:[
+            {name:'Watch S4 Active', price:29999, img:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300&q=80', badge:'-15%'},
+            {name:'Redmi Watch 5 Active', price:12999, img:'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=300&q=80', badge:''},
+            {name:'Mi Band 9 Pro', price:9999, img:'https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?w=300&q=80', badge:''}
+          ]}
+      ]
+    },
+    gaming: {
+      title: '🎮 Gaming',
+      brands: [
+        { logo:'🎮', name:'PlayStation', count:'12 products', products:[
+            {name:'PlayStation 5 Console', price:149999, img:'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=300&q=80', badge:'HOT'},
+            {name:'PS5 Slim Digital', price:119999, img:'https://images.unsplash.com/photo-1622297845775-5ff3fef71d13?w=300&q=80', badge:''},
+            {name:'DualSense Controller', price:19999, img:'https://images.unsplash.com/photo-1593118247619-e2d6f056869e?w=300&q=80', badge:''}
+          ]},
+        { logo:'🟩', name:'Xbox', count:'8 products', products:[
+            {name:'Xbox Series X', price:139999, img:'https://images.unsplash.com/photo-1621259182978-fbf93132d53d?w=300&q=80', badge:''},
+            {name:'Xbox Series S', price:79999, img:'https://images.unsplash.com/photo-1593118247619-e2d6f056869e?w=300&q=80', badge:'-10%'},
+            {name:'Xbox Controller', price:14999, img:'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔴', name:'Nintendo', count:'6 products', products:[
+            {name:'Nintendo Switch 2', price:89999, img:'https://images.unsplash.com/photo-1578303512597-81e6cc155b3e?w=300&q=80', badge:'NEW'},
+            {name:'Switch 2 OLED', price:109999, img:'https://images.unsplash.com/photo-1593118247619-e2d6f056869e?w=300&q=80', badge:'NEW'},
+            {name:'Joy-Con Pack', price:14999, img:'https://images.unsplash.com/photo-1607853202273-797f1c22a38e?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔶', name:'Razer', count:'14 products', products:[
+            {name:'Razer BlackWidow V4 Pro', price:49999, img:'https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=300&q=80', badge:'-12%'},
+            {name:'Razer DeathAdder V3', price:24999, img:'https://images.unsplash.com/photo-1601814933824-fd0b574dd592?w=300&q=80', badge:''},
+            {name:'Razer Kraken V4 Headset', price:34999, img:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80', badge:''}
+          ]}
+      ]
+    },
+    audio: {
+      title: '🔊 Audio',
+      brands: [
+        { logo:'🍎', name:'Apple', count:'5 products', products:[
+            {name:'AirPods Pro 3', price:59999, img:'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=300&q=80', badge:'NEW'},
+            {name:'AirPods Max 2', price:119999, img:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80', badge:''},
+            {name:'AirPods 4', price:34999, img:'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=300&q=80', badge:''}
+          ]},
+        { logo:'🎵', name:'Sony', count:'12 products', products:[
+            {name:'WH-1000XM6', price:89999, img:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80', badge:'NEW'},
+            {name:'WF-1000XM6', price:59999, img:'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=300&q=80', badge:'-5%'},
+            {name:'SRS-XB100 Speaker', price:14999, img:'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&q=80', badge:''}
+          ]},
+        { logo:'🟢', name:'JBL', count:'10 products', products:[
+            {name:'JBL Charge 6', price:34999, img:'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&q=80', badge:'HOT'},
+            {name:'JBL Tune 770NC', price:24999, img:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80', badge:'-20%'},
+            {name:'JBL PartyBox 120', price:79999, img:'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔵', name:'Bose', count:'8 products', products:[
+            {name:'Bose QuietComfort Ultra', price:109999, img:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300&q=80', badge:'-8%'},
+            {name:'Bose SoundLink Max', price:69999, img:'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&q=80', badge:''},
+            {name:'Bose Sport Earbuds', price:39999, img:'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=300&q=80', badge:''}
+          ]}
+      ]
+    },
+    tv: {
+      title: '📺 TV & Projectors',
+      brands: [
+        { logo:'📺', name:'Samsung', count:'12 products', products:[
+            {name:'Samsung QN90D 65" QLED', price:649999, img:'https://images.unsplash.com/photo-1593359677879-a4bb92f4834c?w=300&q=80', badge:'-15%'},
+            {name:'Samsung The Frame 55"', price:399999, img:'https://images.unsplash.com/photo-1567690187548-f07b1d7bf5a9?w=300&q=80', badge:'NEW'},
+            {name:'Samsung Crystal 43"', price:149999, img:'https://images.unsplash.com/photo-1593359677879-a4bb92f4834c?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔵', name:'LG', count:'10 products', products:[
+            {name:'LG OLED C4 65"', price:749999, img:'https://images.unsplash.com/photo-1593359677879-a4bb92f4834c?w=300&q=80', badge:'HOT'},
+            {name:'LG QNED85 55"', price:299999, img:'https://images.unsplash.com/photo-1567690187548-f07b1d7bf5a9?w=300&q=80', badge:'-12%'},
+            {name:'LG 43UR7550 4K', price:129999, img:'https://images.unsplash.com/photo-1593359677879-a4bb92f4834c?w=300&q=80', badge:''}
+          ]},
+        { logo:'🎬', name:'Sony', count:'8 products', products:[
+            {name:'Sony Bravia 9 65"', price:799999, img:'https://images.unsplash.com/photo-1593359677879-a4bb92f4834c?w=300&q=80', badge:'NEW'},
+            {name:'Sony X90L 55"', price:319999, img:'https://images.unsplash.com/photo-1567690187548-f07b1d7bf5a9?w=300&q=80', badge:''},
+            {name:'Sony HT-A7000 Soundbar', price:249999, img:'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=300&q=80', badge:'-10%'}
+          ]},
+        { logo:'🔴', name:'TCL', count:'14 products', products:[
+            {name:'TCL QM89 75" Mini LED', price:449999, img:'https://images.unsplash.com/photo-1593359677879-a4bb92f4834c?w=300&q=80', badge:'-20%'},
+            {name:'TCL 55C655 QLED', price:199999, img:'https://images.unsplash.com/photo-1567690187548-f07b1d7bf5a9?w=300&q=80', badge:''},
+            {name:'TCL 43S5400 Smart TV', price:89999, img:'https://images.unsplash.com/photo-1593359677879-a4bb92f4834c?w=300&q=80', badge:''}
+          ]}
+      ]
+    },
+    appliance: {
+      title: '🏠 Home Appliances',
+      brands: [
+        { logo:'❄️', name:'Haier', count:'20 products', products:[
+            {name:'Haier 1.5 Ton AC Inverter', price:129999, img:'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300&q=80', badge:'-18%'},
+            {name:'Haier HRF-438 Refrigerator', price:149999, img:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&q=80', badge:''},
+            {name:'Haier HWM 120-826', price:59999, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80', badge:''}
+          ]},
+        { logo:'🌬️', name:'Xiaomi', count:'8 products', products:[
+            {name:'Smart Air Purifier 4', price:57999, img:'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300&q=80', badge:'-23%'},
+            {name:'Mi Robot Vacuum 3', price:79999, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80', badge:'NEW'},
+            {name:'Mi Smart Microwave', price:29999, img:'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300&q=80', badge:''}
+          ]},
+        { logo:'🟡', name:'Dawlance', count:'16 products', products:[
+            {name:'Dawlance 1.5T Inverter AC', price:119999, img:'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300&q=80', badge:'-10%'},
+            {name:'Dawlance 9178 Refrigerator', price:139999, img:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&q=80', badge:''},
+            {name:'Dawlance DW-7500 Washer', price:69999, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔵', name:'PEL', count:'12 products', products:[
+            {name:'PEL Inverter 1 Ton AC', price:99999, img:'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=300&q=80', badge:'-15%'},
+            {name:'PEL Classic Refrigerator', price:89999, img:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&q=80', badge:''},
+            {name:'PEL Washing Machine', price:54999, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80', badge:''}
+          ]}
+      ]
+    },
+    camera: {
+      title: '📷 Cameras',
+      brands: [
+        { logo:'🔴', name:'Canon', count:'14 products', products:[
+            {name:'Canon EOS R8 Mirrorless', price:389999, img:'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=300&q=80', badge:'NEW'},
+            {name:'Canon EOS 90D DSLR', price:299999, img:'https://images.unsplash.com/photo-1452780212940-6f5c0d14d848?w=300&q=80', badge:''},
+            {name:'Canon PowerShot V10', price:89999, img:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300&q=80', badge:''}
+          ]},
+        { logo:'🟡', name:'Nikon', count:'11 products', products:[
+            {name:'Nikon Z50 II Mirrorless', price:349999, img:'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=300&q=80', badge:'NEW'},
+            {name:'Nikon D7500 DSLR', price:269999, img:'https://images.unsplash.com/photo-1452780212940-6f5c0d14d848?w=300&q=80', badge:'-8%'},
+            {name:'Nikon Coolpix P950', price:129999, img:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔵', name:'Sony', count:'9 products', products:[
+            {name:'Sony Alpha A7 V', price:649999, img:'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=300&q=80', badge:'NEW'},
+            {name:'Sony ZV-E10 II', price:199999, img:'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300&q=80', badge:''},
+            {name:'Sony FX30 Cinema', price:499999, img:'https://images.unsplash.com/photo-1452780212940-6f5c0d14d848?w=300&q=80', badge:''}
+          ]}
+      ]
+    },
+    printer: {
+      title: '🖨️ Printers',
+      brands: [
+        { logo:'🔵', name:'HP', count:'12 products', products:[
+            {name:'HP LaserJet Pro M404dn', price:89999, img:'https://images.unsplash.com/photo-1612815292991-23f4b1ab2756?w=300&q=80', badge:''},
+            {name:'HP DeskJet 4155e', price:24999, img:'https://images.unsplash.com/photo-1612815292991-23f4b1ab2756?w=300&q=80', badge:'-10%'},
+            {name:'HP Color LaserJet', price:129999, img:'https://images.unsplash.com/photo-1612815292991-23f4b1ab2756?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔴', name:'Canon', count:'8 products', products:[
+            {name:'Canon PIXMA G7070', price:59999, img:'https://images.unsplash.com/photo-1612815292991-23f4b1ab2756?w=300&q=80', badge:'NEW'},
+            {name:'Canon imageCLASS MF267', price:99999, img:'https://images.unsplash.com/photo-1612815292991-23f4b1ab2756?w=300&q=80', badge:''},
+            {name:'Canon TR4650 Wireless', price:34999, img:'https://images.unsplash.com/photo-1612815292991-23f4b1ab2756?w=300&q=80', badge:''}
+          ]},
+        { logo:'🟡', name:'Epson', count:'10 products', products:[
+            {name:'Epson EcoTank L6490', price:79999, img:'https://images.unsplash.com/photo-1612815292991-23f4b1ab2756?w=300&q=80', badge:'-12%'},
+            {name:'Epson ET-2803', price:44999, img:'https://images.unsplash.com/photo-1612815292991-23f4b1ab2756?w=300&q=80', badge:''},
+            {name:'Epson WorkForce Pro', price:119999, img:'https://images.unsplash.com/photo-1612815292991-23f4b1ab2756?w=300&q=80', badge:'NEW'}
+          ]}
+      ]
+    },
+    network: {
+      title: '📡 Networking',
+      brands: [
+        { logo:'🟠', name:'TP-Link', count:'16 products', products:[
+            {name:'TP-Link Deco XE75 Mesh', price:49999, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80', badge:'HOT'},
+            {name:'TP-Link Archer AX90', price:34999, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80', badge:'-15%'},
+            {name:'TP-Link 5G Router', price:29999, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80', badge:'NEW'}
+          ]},
+        { logo:'🔵', name:'Huawei', count:'8 products', products:[
+            {name:'Huawei WiFi AX3 Pro', price:19999, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80', badge:''},
+            {name:'Huawei 5G CPE Pro 3', price:49999, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80', badge:'NEW'},
+            {name:'Huawei AP6050DN', price:39999, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80', badge:''}
+          ]},
+        { logo:'🟢', name:'Tenda', count:'12 products', products:[
+            {name:'Tenda WiFi 6 AX3000', price:14999, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80', badge:''},
+            {name:'Tenda AC23 Router', price:9999, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80', badge:'-20%'},
+            {name:'Tenda 5G03 Router', price:24999, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&q=80', badge:'NEW'}
+          ]}
+      ]
+    },
+    storage: {
+      title: '💾 Storage',
+      brands: [
+        { logo:'🟢', name:'Samsung', count:'10 products', products:[
+            {name:'Samsung 990 Pro 2TB SSD', price:49999, img:'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=300&q=80', badge:'-12%'},
+            {name:'Samsung T7 Shield 2TB', price:34999, img:'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=300&q=80', badge:''},
+            {name:'Samsung 128GB MicroSD', price:4999, img:'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=300&q=80', badge:''}
+          ]},
+        { logo:'🟠', name:'WD', count:'14 products', products:[
+            {name:'WD Black SN850X 2TB', price:44999, img:'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=300&q=80', badge:'HOT'},
+            {name:'WD 4TB External HDD', price:24999, img:'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=300&q=80', badge:'-8%'},
+            {name:'WD Red 6TB NAS Drive', price:39999, img:'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔴', name:'Seagate', count:'12 products', products:[
+            {name:'Seagate 2TB FireCuda SSD', price:54999, img:'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=300&q=80', badge:'NEW'},
+            {name:'Seagate Expansion 4TB', price:19999, img:'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=300&q=80', badge:''},
+            {name:'Seagate BarraCuda 2TB', price:9999, img:'https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=300&q=80', badge:'-15%'}
+          ]}
+      ]
+    },
+    accessories: {
+      title: '🎵 Accessories & More',
+      brands: [
+        { logo:'🖱️', name:'Logitech', count:'20 products', products:[
+            {name:'MX Master 3S Mouse', price:24999, img:'https://images.unsplash.com/photo-1527814050087-3793815479db?w=300&q=80', badge:'HOT'},
+            {name:'MX Keys S Keyboard', price:22999, img:'https://images.unsplash.com/photo-1585670083307-4b5d7f37ab89?w=300&q=80', badge:''},
+            {name:'Logi Dock Flex', price:49999, img:'https://images.unsplash.com/photo-1527814050087-3793815479db?w=300&q=80', badge:'NEW'}
+          ]},
+        { logo:'🟦', name:'Anker', count:'15 products', products:[
+            {name:'Anker 140W GaN Charger', price:14999, img:'https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=300&q=80', badge:'-15%'},
+            {name:'Anker Nano Power Bank', price:9999, img:'https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=300&q=80', badge:''},
+            {name:'Anker USB-C Hub 7-in-1', price:12999, img:'https://images.unsplash.com/photo-1527814050087-3793815479db?w=300&q=80', badge:''}
+          ]},
+        { logo:'🔶', name:'Baseus', count:'18 products', products:[
+            {name:'Baseus 65W USB-C Charger', price:8999, img:'https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=300&q=80', badge:''},
+            {name:'Baseus 20000mAh PD Bank', price:14999, img:'https://images.unsplash.com/photo-1609091839311-d5365f9ff1c5?w=300&q=80', badge:'-10%'},
+            {name:'Baseus HDMI 2.1 Cable', price:4999, img:'https://images.unsplash.com/photo-1527814050087-3793815479db?w=300&q=80', badge:''}
+          ]}
+      ]
+    }
+  };
+
+  // ===== CATEGORY MODAL =====
+  function openCatModal(catKey) {
+    const cat = categoryData[catKey];
+    if (!cat) { showToast('Opening ' + catKey + '...'); return; }
+    document.getElementById('catModalTitle').textContent = cat.title;
+    const grid = document.getElementById('catBrandsGrid');
+    grid.innerHTML = cat.brands.map((b, i) => `
+      <div class="brand-card" onclick="showBrandProducts(${JSON.stringify(catKey)}, ${i})">
+        <div class="brand-card-logo">${b.logo}</div>
+        <div class="brand-card-name">${b.name}</div>
+        <div class="brand-card-count">${b.count}</div>
+      </div>
+    `).join('');
+    document.getElementById('catProductsSection').style.display = 'none';
+    document.getElementById('catModal').classList.add('open');
+  }
+
+  function showBrandProducts(catKey, brandIdx) {
+    const cat = categoryData[catKey];
+    const brand = cat.brands[brandIdx];
+    const sec = document.getElementById('catProductsSection');
+    document.getElementById('catProductsTitle').textContent = brand.logo + ' ' + brand.name + ' Products';
+    document.getElementById('catProductsGrid').innerHTML = brand.products.map(p => `
+      <div class="product-card">
+        <div class="product-img">
+          ${p.badge ? `<span class="product-badge ${p.badge==='NEW'?'new-badge':p.badge==='HOT'?'hot-badge':''}">${p.badge}</span>` : ''}
+          <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'" style="width:100%;height:100%;object-fit:contain;padding:12px;">
+        </div>
+        <div class="product-info">
+          <div class="product-brand">${brand.name}</div>
+          <div class="product-name">${p.name}</div>
+          <div><span class="product-price">Rs ${p.price.toLocaleString()}</span></div>
+        </div>
+        <div class="product-actions">
+          <button class="btn-cart" onclick="addToCart(this,'${p.name.replace(/'/g,"\\'")}','${catKey==='mobile'?'📱':catKey==='laptop'?'💻':catKey==='watch'?'⌚':catKey==='gaming'?'🎮':catKey==='audio'?'🔊':'📦'}',${p.price})">Add to Cart 🛒</button>
+          <button class="btn-wish" onclick="addToWishlistItem('${p.name.replace(/'/g,"\\'")}','${catKey==='mobile'?'📱':catKey==='laptop'?'💻':catKey==='watch'?'⌚':catKey==='gaming'?'🎮':catKey==='audio'?'🔊':'📦'}',${p.price}); this.textContent=this.textContent==='🤍'?'❤️':'🤍'">🤍</button>
+        </div>
+      </div>
+    `).join('');
+    sec.style.display = 'block';
+    sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function closeCatModal() {
+    document.getElementById('catModal').classList.remove('open');
+  }
+  document.getElementById('catModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCatModal();
+  });
+
+  // ===== WISHLIST DATA =====
+  let wishlist = JSON.parse(localStorage.getItem('sh_wish') || '[]');
+  function addToWishlistItem(name, emoji, price) {
+    if (!wishlist.find(i => i.name === name)) {
+      wishlist.push({ name, emoji, price });
+      localStorage.setItem('sh_wish', JSON.stringify(wishlist));
+      showToast('❤️ Added to wishlist: ' + name);
+    } else {
+      showToast('Already in wishlist!');
+    }
+  }
+
+  function removeWishItem(name, btn) {
+    wishlist = wishlist.filter(i => i.name !== name);
+    // Also remove from demo list tracking
+    let removed = JSON.parse(localStorage.getItem('sh_wish_removed') || '[]');
+    if (!removed.includes(name)) removed.push(name);
+    localStorage.setItem('sh_wish_removed', JSON.stringify(removed));
+    localStorage.setItem('sh_wish', JSON.stringify(wishlist));
+    showToast('💔 Removed from wishlist');
+    // Re-render wishlist
+    document.getElementById('accPageBody').innerHTML = renderAccPage('wishlist');
+  }
+
+  // ===== ACCOUNT PAGES =====
+  function openAccPage(page) {
+    if (!currentUser) { switchForm('login'); openModal('authModal'); return; }
+    const titles = { orders:'📦 My Orders', wishlist:'❤️ My Wishlist', addresses:'📍 Saved Addresses', settings:'⚙️ Settings' };
+    document.getElementById('accPageTitle').textContent = titles[page];
+    document.getElementById('accPageBody').innerHTML = renderAccPage(page);
+    document.getElementById('accPageOverlay').classList.add('open');
+  }
+
+  function closeAccPage() {
+    document.getElementById('accPageOverlay').classList.remove('open');
+  }
+  document.getElementById('accPageOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeAccPage();
+  });
+
+  function renderAccPage(page) {
+    if (page === 'orders') {
+      const orders = JSON.parse(localStorage.getItem('sh_orders') || '[]');
+      const demoOrders = [
+        { id:'SH-2026-78542', date:'May 1, 2026', status:'delivered', statusLabel:'Delivered', items:[{e:'📱',n:'Samsung Galaxy S26'},{e:'🔊',n:'JBL Charge 6'}], total:344998 },
+        { id:'SH-2026-71203', date:'Apr 28, 2026', status:'shipped', statusLabel:'Shipped', items:[{e:'💻',n:'MacBook Air M5'}], total:389999 },
+        { id:'SH-2026-68901', date:'Apr 22, 2026', status:'processing', statusLabel:'Processing', items:[{e:'⌚',n:'Huawei Watch GT6 Pro'},{e:'🎮',n:'PS5 Console'}], total:229998 }
+      ];
+      const allOrders = [...orders, ...demoOrders];
+      if (allOrders.length === 0) return '<div style="text-align:center;padding:40px;color:#bbb;"><div style="font-size:64px;margin-bottom:16px;">📦</div><p style="font-size:15px;">No orders yet.<br>Start shopping to see your orders here!</p></div>';
+      return allOrders.map(o => `
+        <div class="order-card">
+          <div class="order-card-header">
+            <div><div class="order-id">Order #${o.id}</div><div class="order-date">${o.date}</div></div>
+            <span class="order-status ${o.status}">${o.statusLabel}</span>
+          </div>
+          <div class="order-items-row">${o.items.map(i => `<div class="order-item-thumb" title="${i.n}">${i.e}</div>`).join('')}</div>
+          <div class="order-footer">
+            <div class="order-total">Rs ${o.total.toLocaleString()}</div>
+            <div class="order-actions">
+              <button class="order-btn outline" onclick="showToast('Opening order ${o.id}...')">View Details</button>
+              ${o.status==='delivered'?`<button class="order-btn primary" onclick="showToast('Opening return for ${o.id}...')">Return</button>`:''}
+              ${o.status!=='delivered'?`<button class="order-btn primary" onclick="openTrackInAcc('${o.id}')">Track</button>`:''}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    if (page === 'wishlist') {
+      let w = JSON.parse(localStorage.getItem('sh_wish') || '[]');
+      const removed = JSON.parse(localStorage.getItem('sh_wish_removed') || '[]');
+      const demo = [
+        { name:'iPhone 17 Pro Max', emoji:'📱', price:449999 },
+        { name:'Sony WH-1000XM6', emoji:'🔊', price:89999 },
+        { name:'Samsung Galaxy Watch 8', emoji:'⌚', price:79999 },
+        { name:'PlayStation 5 Console', emoji:'🎮', price:149999 }
+      ];
+      w = [...w, ...demo.filter(d => !w.find(i => i.name === d.name) && !removed.includes(d.name))];
+      if (w.length === 0) return '<div style="text-align:center;padding:40px;color:#bbb;"><div style="font-size:64px;margin-bottom:16px;">❤️</div><p>Your wishlist is empty.<br>Click ❤️ on any product to save it!</p></div>';
+      return `<div class="wish-grid">${w.map((item) => `
+        <div class="wish-card">
+          <div class="wish-img">${item.emoji}</div>
+          <div class="wish-info">
+            <div class="wish-name">${item.name}</div>
+            <div class="wish-price">Rs ${item.price.toLocaleString()}</div>
+            <div class="wish-actions">
+              <button class="wish-btn add" onclick="addToCart(this,'${item.name.replace(/'/g,"\\'")}','${item.emoji}',${item.price}); closeAccPage();">Add to Cart</button>
+              <button class="wish-btn rem" onclick="removeWishItem('${item.name.replace(/'/g,"\\'")}', this)">Remove</button>
+            </div>
+          </div>
+        </div>`).join('')}
+      </div>`;
+    }
+
+    if (page === 'addresses') {
+      const saved = JSON.parse(localStorage.getItem('sh_addresses') || '[]');
+      const deleted = JSON.parse(localStorage.getItem('sh_addr_deleted') || '[]');
+      const demo = [
+        { label:'🏠 Home', text: (currentUser ? currentUser.name : 'User') + '<br>House 12, Street 4, F-7/2<br>Islamabad, Punjab 44000<br>📞 +92 327 6927349', isDefault:true },
+        { label:'🏢 Office', text:(currentUser ? currentUser.name : 'User') + '<br>Office 301, Blue Area<br>Islamabad, Punjab 44010<br>📞 +92 327 0000000', isDefault:false }
+      ];
+      const all = [...saved, ...demo.filter(d => !saved.find(s => s.label === d.label) && !deleted.includes(d.label))];
+      const addrCards = all.map((a, i) => `
+        <div class="addr-card ${a.isDefault?'default':''}" id="addrCard${i}">
+          ${a.isDefault?'<span class="addr-default-badge">Default</span>':''}
+          <div class="addr-label">${a.label}</div>
+          <div class="addr-text">${a.text}</div>
+          <div class="addr-actions">
+            <button class="addr-btn edit" onclick="showEditAddrForm(${i})">✏️ Edit</button>
+            <button class="addr-btn del" onclick="deleteAddress(${i})">🗑 Delete</button>
+            ${!a.isDefault?`<button class="addr-btn edit" onclick="setDefaultAddress(${i})">Set Default</button>`:''}
+          </div>
+        </div>
+      `).join('');
+      return addrCards + `
+        <button class="add-addr-btn" onclick="showAddAddrForm()">+ Add New Address</button>
+        <div id="addrFormBox" style="display:none;margin-top:20px;background:#f9f9f9;border-radius:10px;padding:20px;border:1px solid #eee;">
+          <div style="font-size:15px;font-weight:700;color:#1a1a2e;margin-bottom:14px;" id="addrFormTitle">Add New Address</div>
+          <input type="hidden" id="addrEditIndex" value="-1">
+          <div class="form-group"><label>Label (e.g. 🏠 Home)</label><input class="settings-field" id="addrLabel" placeholder="🏠 Home"></div>
+          <div class="form-group"><label>Full Name</label><input class="settings-field" id="addrName" placeholder="Full Name"></div>
+          <div class="form-group"><label>Street Address</label><input class="settings-field" id="addrStreet" placeholder="House/Street/Area"></div>
+          <div class="form-group"><label>City & Postal Code</label><input class="settings-field" id="addrCity" placeholder="Islamabad, 44000"></div>
+          <div class="form-group"><label>Phone</label><input class="settings-field" id="addrPhone" placeholder="📞 +92 3XX XXXXXXX"></div>
+          <div style="display:flex;gap:10px;margin-top:10px;">
+            <button class="save-settings-btn" style="flex:1;" onclick="saveAddress()">Save Address</button>
+            <button class="addr-btn edit" style="flex:1;padding:12px;" onclick="document.getElementById('addrFormBox').style.display='none'">Cancel</button>
+          </div>
+        </div>
+      `;
+    }
+
+    if (page === 'settings') {
+      const u = currentUser || {};
+      const notifOn = localStorage.getItem('sh_notif') !== 'false';
+      const darkOn = localStorage.getItem('sh_dark') === 'true';
+      return `
+        <div class="settings-section">
+          <div class="settings-section-title">Personal Information</div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Full Name</div><div class="settings-row-sub">Displayed on orders & receipts</div></div>
+            <input class="settings-field" id="setName" value="${u.name || ''}" placeholder="Your full name">
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Email Address</div><div class="settings-row-sub">Used for login & notifications</div></div>
+            <input class="settings-field" id="setEmail" value="${u.email || ''}" placeholder="your@email.com">
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Phone Number</div><div class="settings-row-sub">For order delivery updates</div></div>
+            <input class="settings-field" id="setPhone" value="${u.phone || ''}" placeholder="03XX-XXXXXXX">
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-title">Preferences</div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Order Notifications</div><div class="settings-row-sub">Email & SMS updates on orders</div></div>
+            <button class="toggle ${notifOn?'on':''}" id="togNotif" onclick="this.classList.toggle('on'); localStorage.setItem('sh_notif', this.classList.contains('on'))"></button>
+          </div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Deals & Offers</div><div class="settings-row-sub">Receive weekly deals newsletter</div></div>
+            <button class="toggle on" id="togDeals" onclick="this.classList.toggle('on')"></button>
+          </div>
+        </div>
+        <div class="settings-section">
+          <div class="settings-section-title">Security</div>
+          <div class="settings-row">
+            <div><div class="settings-row-label">Change Password</div><div class="settings-row-sub">Update your login password</div></div>
+            <button class="addr-btn edit" style="padding:8px 18px;" onclick="showToast('Password change email sent!')">Change</button>
+          </div>
+        </div>
+        <button class="save-settings-btn" onclick="saveSettings()">Save Changes</button>
+        <div style="margin-top:20px;padding-top:18px;border-top:1px solid #eee;">
+          <div style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:14px;">Danger Zone</div>
+          <button class="danger-btn" onclick="if(confirm('Are you sure you want to delete your account?')){logoutUser();closeAccPage();showToast('Account deleted')}">Delete Account</button>
+        </div>
+      `;
+    }
+    return '';
+  }
+
+  // ===== ADDRESS MANAGEMENT =====
+  function getAddresses() {
+    const saved = JSON.parse(localStorage.getItem('sh_addresses') || '[]');
+    const demo = [
+      { label:'🏠 Home', text: (currentUser ? currentUser.name : 'User') + '<br>House 12, Street 4, F-7/2<br>Islamabad, Punjab 44000<br>📞 +92 327 6927349', isDefault:true },
+      { label:'🏢 Office', text:(currentUser ? currentUser.name : 'User') + '<br>Office 301, Blue Area<br>Islamabad, Punjab 44010<br>📞 +92 327 0000000', isDefault:false }
+    ];
+    return [...saved, ...demo.filter(d => !saved.find(s => s.label === d.label))];
+  }
+
+  function showAddAddrForm() {
+    document.getElementById('addrFormTitle').textContent = 'Add New Address';
+    document.getElementById('addrEditIndex').value = '-1';
+    document.getElementById('addrLabel').value = '';
+    document.getElementById('addrName').value = currentUser ? currentUser.name : '';
+    document.getElementById('addrStreet').value = '';
+    document.getElementById('addrCity').value = '';
+    document.getElementById('addrPhone').value = '';
+    document.getElementById('addrFormBox').style.display = 'block';
+    document.getElementById('addrFormBox').scrollIntoView({ behavior:'smooth' });
+  }
+
+  function showEditAddrForm(idx) {
+    const all = getAddresses();
+    const a = all[idx];
+    // Parse text back to fields
+    const lines = a.text.replace(/<br>/g, '\n').split('\n');
+    document.getElementById('addrFormTitle').textContent = 'Edit Address';
+    document.getElementById('addrEditIndex').value = idx;
+    document.getElementById('addrLabel').value = a.label;
+    document.getElementById('addrName').value = lines[0] || '';
+    document.getElementById('addrStreet').value = lines[1] || '';
+    document.getElementById('addrCity').value = lines[2] || '';
+    document.getElementById('addrPhone').value = lines[3] || '';
+    document.getElementById('addrFormBox').style.display = 'block';
+    document.getElementById('addrFormBox').scrollIntoView({ behavior:'smooth' });
+  }
+
+  function saveAddress() {
+    const label = document.getElementById('addrLabel').value.trim();
+    const name = document.getElementById('addrName').value.trim();
+    const street = document.getElementById('addrStreet').value.trim();
+    const city = document.getElementById('addrCity').value.trim();
+    const phone = document.getElementById('addrPhone').value.trim();
+    if (!label || !name || !street || !city) { showToast('⚠️ Please fill all required fields'); return; }
+    const text = name + '<br>' + street + '<br>' + city + (phone ? '<br>' + phone : '');
+    const editIdx = parseInt(document.getElementById('addrEditIndex').value);
+    const saved = JSON.parse(localStorage.getItem('sh_addresses') || '[]');
+    const all = getAddresses();
+    if (editIdx >= 0) {
+      // Edit existing
+      const addr = all[editIdx];
+      const savedIdx = saved.findIndex(s => s.label === addr.label);
+      const updated = { label, text, isDefault: addr.isDefault };
+      if (savedIdx >= 0) saved[savedIdx] = updated;
+      else saved.push(updated);
+      showToast('✅ Address updated!');
+    } else {
+      saved.push({ label, text, isDefault: false });
+      showToast('✅ New address saved!');
+    }
+    localStorage.setItem('sh_addresses', JSON.stringify(saved));
+    document.getElementById('accPageBody').innerHTML = renderAccPage('addresses');
+  }
+
+  function deleteAddress(idx) {
+    if (!confirm('Delete this address?')) return;
+    const all = getAddresses();
+    const addr = all[idx];
+    const saved = JSON.parse(localStorage.getItem('sh_addresses') || '[]');
+    const newSaved = saved.filter(s => s.label !== addr.label);
+    // For demo addresses, track deletions
+    const deleted = JSON.parse(localStorage.getItem('sh_addr_deleted') || '[]');
+    if (!deleted.includes(addr.label)) deleted.push(addr.label);
+    localStorage.setItem('sh_addr_deleted', JSON.stringify(deleted));
+    localStorage.setItem('sh_addresses', JSON.stringify(newSaved));
+    showToast('🗑 Address deleted');
+    document.getElementById('accPageBody').innerHTML = renderAccPage('addresses');
+  }
+
+  function setDefaultAddress(idx) {
+    const all = getAddresses();
+    const saved = JSON.parse(localStorage.getItem('sh_addresses') || '[]');
+    // Mark all non-default, set this one as default
+    const newSaved = all.map((a, i) => ({ ...a, isDefault: i === idx }));
+    localStorage.setItem('sh_addresses', JSON.stringify(newSaved));
+    showToast('✅ Default address updated!');
+    document.getElementById('accPageBody').innerHTML = renderAccPage('addresses');
+  }
+
+  function openTrackInAcc(orderId) {
+    closeAccPage();
+    document.getElementById('trackId').value = orderId;
+    document.getElementById('trackEmail').value = currentUser ? currentUser.email : '';
+    switchForm('track');
+    openModal('authModal');
+    handleTrack();
+  }
+
+  // ===== INIT =====
+  init();
+</script>
+</body>
+</html>
