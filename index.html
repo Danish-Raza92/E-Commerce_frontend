@@ -970,35 +970,56 @@
   let currentUser = JSON.parse(localStorage.getItem('sh_user') || 'null');
   let cart = JSON.parse(localStorage.getItem('sh_cart') || '[]');
 
-  // ===== ADMIN PRODUCTS (from API) =====
+  // ===== ADMIN PRODUCTS (from API + localStorage bridge) =====
   let adminProducts = [];
   let adminProductsLoaded = false;
 
   async function loadAdminProducts() {
     if (adminProductsLoaded) return;
+
+    // First: try localStorage bridge (instant, no API needed)
+    const localProds = JSON.parse(localStorage.getItem('danii_products') || '[]');
+
+    // Then: try API
+    let apiProds = [];
     try {
-      const res = await fetch(API_BASE + '/products');
-      if (!res.ok) return;
-      const products = await res.json();
-      if (!Array.isArray(products) || products.length === 0) return;
-
-      adminProducts = products;
-      adminProductsLoaded = true;
-
-      // Show the section
-      document.getElementById('adminProductsSection').style.display = 'block';
-
-      // Build category tabs
-      const cats = [...new Set(products.map(p => p.category))];
-      const catEmoji = { mobile:'📱', laptop:'💻', gaming:'🎮', audio:'🔊', tv:'📺', watch:'⌚', camera:'📷', appliance:'🏠', printer:'🖨️', network:'📡', storage:'💾', accessories:'🎵' };
-      document.getElementById('adminProductTabs').innerHTML =
-        `<button class="tab active" onclick="filterAdminTab(null, this)">All</button>` +
-        cats.map(c => `<button class="tab" onclick="filterAdminTab('${c}', this)">${catEmoji[c]||'📦'} ${c.charAt(0).toUpperCase()+c.slice(1)}</button>`).join('');
-
-      renderAdminProducts(products);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch(API_BASE + '/products', { signal: controller.signal });
+      clearTimeout(timeout);
+      if (res.ok) {
+        apiProds = await res.json();
+        // Save to localStorage bridge for offline use
+        if (Array.isArray(apiProds) && apiProds.length > 0) {
+          localStorage.setItem('danii_products', JSON.stringify(apiProds));
+        }
+      }
     } catch(e) {
-      // API unavailable — silently fail, show default products
+      console.log('API not reachable, using localStorage products:', e.message);
     }
+
+    // Merge: API products take priority, then local
+    const merged = apiProds.length > 0 ? apiProds : localProds;
+
+    if (!Array.isArray(merged) || merged.length === 0) {
+      console.log('No admin products found');
+      return;
+    }
+
+    adminProducts = merged.filter(p => p.isActive !== false);
+    adminProductsLoaded = true;
+
+    // Show the section
+    document.getElementById('adminProductsSection').style.display = 'block';
+
+    // Build category tabs dynamically
+    const cats = [...new Set(adminProducts.map(p => p.category))];
+    const catEmoji = { mobile:'📱', laptop:'💻', gaming:'🎮', audio:'🔊', tv:'📺', watch:'⌚', camera:'📷', appliance:'🏠', printer:'🖨️', network:'📡', storage:'💾', accessories:'🎵' };
+    document.getElementById('adminProductTabs').innerHTML =
+      `<button class="tab active" onclick="filterAdminTab(null, this)">All</button>` +
+      cats.map(c => `<button class="tab" onclick="filterAdminTab('${c}', this)">${catEmoji[c]||'📦'} ${c.charAt(0).toUpperCase()+c.slice(1)}</button>`).join('');
+
+    renderAdminProducts(adminProducts);
   }
 
   function filterAdminTab(cat, btn) {
@@ -1015,7 +1036,7 @@
           <div class="product-img">
             ${p.badge ? `<span class="product-badge ${p.badge==='NEW'?'new-badge':p.badge==='HOT'?'hot-badge':''}">${p.badge}</span>` : ''}
             ${p.image
-              ? `<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" style="width:100%;height:100%;object-fit:contain;padding:12px;">
+              ? `<img src="${p.image}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;padding:12px;" onerror="this.style.display='none'; this.nextSibling.style.display='flex';">
                  <div style="display:none;align-items:center;justify-content:center;height:100%;font-size:52px;">${p.emoji || catEmoji[p.category] || '📦'}</div>`
               : `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:52px;">${p.emoji || catEmoji[p.category] || '📦'}</div>`
             }
@@ -1024,12 +1045,12 @@
             <div class="product-brand">${p.brand}</div>
             <div class="product-name">${p.name}</div>
             <div>
-              <span class="product-price">Rs ${p.price?.toLocaleString()}</span>
-              ${p.oldPrice ? `<span class="product-old">Rs ${p.oldPrice.toLocaleString()}</span>` : ''}
+              <span class="product-price">Rs ${Number(p.price)?.toLocaleString()}</span>
+              ${p.oldPrice ? `<span class="product-old">Rs ${Number(p.oldPrice).toLocaleString()}</span>` : ''}
             </div>
           </div>
           <div class="product-actions">
-            <button class="btn-cart" onclick="addToCart(this,'${p.name.replace(/'/g,"\\'")}','${p.emoji || catEmoji[p.category] || '📦'}',${p.price})">Add to Cart 🛒</button>
+            <button class="btn-cart" onclick="addToCart(this,'${p.name.replace(/'/g,"\\'").replace(/"/g,'\\"')}','${p.emoji || catEmoji[p.category] || '📦'}',${p.price})">Add to Cart 🛒</button>
             <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
           </div>
         </div>
@@ -1041,7 +1062,7 @@
   function init() {
     updateAuthUI();
     updateCartUI();
-    loadAdminProducts(); // Load admin products on page load
+    loadAdminProducts(); // Load admin-added products
 
     // Verify token on load
     const token = localStorage.getItem('sh_token');

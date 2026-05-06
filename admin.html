@@ -500,6 +500,7 @@
     document.getElementById('adminLayout').style.display = 'block';
     document.getElementById('sbAdminName').textContent = adminUser?.name || 'Admin';
     loadDashboard();
+    syncProductsToLocalStorage(); // sync on login
   }
 
   // ===== NAVIGATION =====
@@ -646,19 +647,40 @@
       const body = { name, brand, category, price, oldPrice, badge, stock, image, emoji, description };
       if (id) {
         await api('/products/' + id, 'PUT', body);
-        toast('✅ Product updated!');
+        toast('✅ Product updated! Website pe show ho ga.');
       } else {
         await api('/products', 'POST', body);
-        toast('✅ Product added!');
+        toast('✅ Product add ho gaya! Website pe show ho ga.');
       }
       closeProductModal();
-      loadProducts();
+      await loadProducts();
+      // Bridge: sync to localStorage so website shows products immediately
+      syncProductsToLocalStorage();
     } catch (err) {
       errEl.textContent = '❌ ' + err.message;
       errEl.classList.add('show');
     } finally {
       btn.textContent = id ? 'Update Product' : 'Add Product';
       btn.disabled = false;
+    }
+  }
+
+  // Sync active products to localStorage — website reads from here
+  async function syncProductsToLocalStorage() {
+    try {
+      // Use public products endpoint (no token needed)
+      const RAILWAY_URL = 'https://e-commercebackend-production-4ade.up.railway.app';
+      const pubApi = window.location.hostname === 'localhost' ? 'http://localhost:8080/api' : RAILWAY_URL + '/api';
+      const res = await fetch(pubApi + '/products');
+      if (res.ok) {
+        const prods = await res.json();
+        localStorage.setItem('danii_products', JSON.stringify(prods));
+        console.log('✅ Synced', prods.length, 'products to localStorage bridge');
+      }
+    } catch(e) {
+      // Fallback: use currently loaded allProducts
+      const active = allProducts.filter(p => p.isActive !== false);
+      localStorage.setItem('danii_products', JSON.stringify(active));
     }
   }
 
@@ -672,7 +694,8 @@
     try {
       await api('/products/' + id, 'DELETE');
       toast('🗑 Product deleted!');
-      loadProducts();
+      await loadProducts();
+      syncProductsToLocalStorage();
     } catch (err) { toast('❌ ' + err.message); }
   }
 
@@ -680,7 +703,8 @@
     try {
       const res = await api('/products/' + id + '/toggle', 'PUT');
       toast(res.message);
-      loadProducts();
+      await loadProducts();
+      syncProductsToLocalStorage();
     } catch (err) { toast('❌ ' + err.message); }
   }
 
