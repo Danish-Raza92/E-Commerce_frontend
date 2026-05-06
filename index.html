@@ -856,7 +856,7 @@
     <div class="banner-text">
       <h3>🎮 Gaming Zone</h3>
       <p>PS5, Xbox & Nintendo — all in one place</p>
-      <button onclick="showToast('Opening Gaming Zone...')">Explore Gaming →</button>
+      <button onclick="openCatModal('gaming')">Explore Gaming →</button>
     </div>
     <div class="banner-img"><img src="https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?w=300&q=80" alt="Gaming" style="width:120px;height:120px;object-fit:contain;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.4));border-radius:8px;" onerror="this.outerHTML='🕹️'"></div>
   </div>
@@ -864,7 +864,7 @@
     <div class="banner-text">
       <h3>💳 Easy Instalments</h3>
       <p>0% markup on selected products. Apply now!</p>
-      <button onclick="showToast('Opening Instalment Plans...')">Apply Now →</button>
+      <button onclick="openInstalmentModal()">Apply Now →</button>
     </div>
     <div class="banner-img"><img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=300&q=80" alt="Instalments" style="width:120px;height:120px;object-fit:contain;filter:drop-shadow(0 4px 16px rgba(0,0,0,0.4));border-radius:8px;" onerror="this.outerHTML='💳'"></div>
   </div>
@@ -1992,8 +1992,255 @@
     handleTrack();
   }
 
+
+  // ===== SEARCH =====
+  function handleSearch() {
+    const q = document.getElementById('searchInput').value.trim().toLowerCase();
+    if (!q) { showToast('⚠️ Please enter a search term'); return; }
+
+    // Collect all products from categoryData
+    const results = [];
+    Object.entries(categoryData).forEach(([catKey, cat]) => {
+      const emoji = catKey==='mobile'?'📱':catKey==='laptop'?'💻':catKey==='watch'?'⌚':catKey==='gaming'?'🎮':catKey==='audio'?'🔊':catKey==='tv'?'📺':'📦';
+      cat.brands.forEach(brand => {
+        brand.products.forEach(p => {
+          if (p.name.toLowerCase().includes(q) || brand.name.toLowerCase().includes(q) || cat.title.toLowerCase().includes(q)) {
+            results.push({ ...p, brand: brand.name, emoji, catKey });
+          }
+        });
+      });
+    });
+
+    // Also search featured products on page
+    document.querySelectorAll('.product-card').forEach(card => {
+      const name = card.querySelector('.product-name')?.textContent || '';
+      const brand = card.querySelector('.product-brand')?.textContent || '';
+      if ((name.toLowerCase().includes(q) || brand.toLowerCase().includes(q)) && !results.find(r => r.name === name)) {
+        const priceText = card.querySelector('.product-price')?.textContent?.replace(/[^0-9]/g,'') || '0';
+        const emoji = card.querySelector('.cart-item-img')?.textContent || '📦';
+        results.push({ name, brand, price: parseInt(priceText), emoji: '📦', catKey: 'featured', img: card.querySelector('img')?.src || '' });
+      }
+    });
+
+    const modal = document.getElementById('searchModal');
+    const grid = document.getElementById('searchResultsGrid');
+    document.getElementById('searchModalTitle').textContent = '🔍 ' + results.length + ' result' + (results.length===1?'':'s') + ' for "' + document.getElementById('searchInput').value.trim() + '"';
+
+    if (results.length === 0) {
+      grid.innerHTML = '<div style="text-align:center;padding:40px;color:#bbb;grid-column:1/-1;"><div style="font-size:48px;margin-bottom:12px;">🔍</div><p>No products found for "<strong>' + document.getElementById('searchInput').value.trim() + '</strong>".<br>Try a different keyword.</p></div>';
+    } else {
+      grid.innerHTML = results.map(p => `
+        <div class="product-card">
+          <div class="product-img">
+            ${p.badge ? `<span class="product-badge ${p.badge==='NEW'?'new-badge':p.badge==='HOT'?'hot-badge':''}">${p.badge}</span>` : ''}
+            ${p.img ? `<img src="${p.img}" alt="${p.name}" loading="lazy" style="width:100%;height:100%;object-fit:contain;padding:12px;" onerror="this.style.display='none'">` : `<div style="font-size:52px;display:flex;align-items:center;justify-content:center;height:100%;">${p.emoji}</div>`}
+          </div>
+          <div class="product-info">
+            <div class="product-brand">${p.brand}</div>
+            <div class="product-name">${p.name}</div>
+            <div><span class="product-price">Rs ${p.price.toLocaleString()}</span></div>
+          </div>
+          <div class="product-actions">
+            <button class="btn-cart" onclick="addToCart(this,'${p.name.replace(/'/g,"\'")}','${p.emoji}',${p.price})">Add to Cart 🛒</button>
+            <button class="btn-wish" onclick="toggleWish(this)">🤍</button>
+          </div>
+        </div>
+      `).join('');
+    }
+    modal.classList.add('open');
+  }
+
+  document.getElementById('searchModal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+
+  // ===== INSTALMENT MODAL =====
+  function openInstalmentModal() {
+    // Pre-fill email if logged in
+    if (currentUser) {
+      document.getElementById('instEmail').value = currentUser.email || '';
+      document.getElementById('instName').value = currentUser.name || '';
+      document.getElementById('instPhone').value = currentUser.phone || '';
+    }
+    // Auto-calculate when price or duration changes
+    ['instPrice','instDuration'].forEach(id => {
+      document.getElementById(id).addEventListener('input', updateInstalmentCalc);
+      document.getElementById(id).addEventListener('change', updateInstalmentCalc);
+    });
+    openModal('instalmentModal');
+  }
+
+  function updateInstalmentCalc() {
+    const price = parseInt(document.getElementById('instPrice').value) || 0;
+    const months = parseInt(document.getElementById('instDuration').value) || 0;
+    const box = document.getElementById('instCalcBox');
+    const txt = document.getElementById('instCalcText');
+    if (price > 0 && months > 0) {
+      const markup = months <= 6 ? 0 : months === 12 ? 0.05 : 0.10;
+      const total = price * (1 + markup);
+      const monthly = Math.ceil(total / months);
+      box.style.display = 'block';
+      txt.innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+          <div>Product Price: <strong>Rs ${price.toLocaleString()}</strong></div>
+          <div>Duration: <strong>${months} months</strong></div>
+          <div>Markup: <strong>${markup===0?'0% (Free!)':((markup*100)+'%')}</strong></div>
+          <div>Total Amount: <strong>Rs ${Math.ceil(total).toLocaleString()}</strong></div>
+        </div>
+        <div style="margin-top:8px;padding:8px;background:#22a85a;color:#fff;border-radius:6px;text-align:center;font-weight:700;font-size:15px;">
+          Monthly Instalment: Rs ${monthly.toLocaleString()}
+        </div>
+      `;
+    } else {
+      box.style.display = 'none';
+    }
+  }
+
+  function submitInstalmentForm() {
+    const errEl = document.getElementById('instFormErr');
+    errEl.classList.remove('show');
+
+    const name = document.getElementById('instName').value.trim();
+    const cnic = document.getElementById('instCnic').value.trim();
+    const phone = document.getElementById('instPhone').value.trim();
+    const product = document.getElementById('instProduct').value.trim();
+    const price = document.getElementById('instPrice').value.trim();
+    const duration = document.getElementById('instDuration').value;
+    const bank = document.getElementById('instBank').value;
+
+    if (!name || !cnic || !phone || !product || !price || !duration || !bank) {
+      errEl.textContent = '⚠️ Please fill all required fields marked with *';
+      errEl.classList.add('show');
+      return;
+    }
+    if (cnic.replace(/[^0-9]/g,'').length !== 13) {
+      errEl.textContent = '⚠️ Please enter a valid 13-digit CNIC number';
+      errEl.classList.add('show');
+      return;
+    }
+
+    // Success
+    closeModal('instalmentModal');
+    showToast('✅ Application submitted! We will contact you within 24 hours.');
+
+    // Clear form
+    ['instName','instCnic','instPhone','instEmail','instProduct','instPrice'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('instDuration').value = '';
+    document.getElementById('instBank').value = '';
+    document.getElementById('instCalcBox').style.display = 'none';
+  }
+
   // ===== INIT =====
   init();
 </script>
+
+<!-- ===== INSTALMENT MODAL ===== -->
+<div class="modal-overlay" id="instalmentModal" style="z-index:9100;">
+  <div class="modal-box" style="max-width:520px;width:95vw;">
+    <button class="modal-close" onclick="closeModal('instalmentModal')">✕</button>
+    <div class="modal-title">💳 Easy Instalment Plan</div>
+    <div class="modal-sub">0% markup financing — Apply in 2 minutes!</div>
+
+    <div style="display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:120px;background:#fff5f0;border:1.5px solid #ff6b35;border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:20px;">🏦</div>
+        <div style="font-size:12px;font-weight:700;color:#1a1a2e;margin-top:4px;">3 Months</div>
+        <div style="font-size:11px;color:#ff6b35;font-weight:600;">0% markup</div>
+      </div>
+      <div style="flex:1;min-width:120px;background:#fff5f0;border:1.5px solid #ff6b35;border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:20px;">📅</div>
+        <div style="font-size:12px;font-weight:700;color:#1a1a2e;margin-top:4px;">6 Months</div>
+        <div style="font-size:11px;color:#ff6b35;font-weight:600;">0% markup</div>
+      </div>
+      <div style="flex:1;min-width:120px;background:#fff5f0;border:1.5px solid #ff6b35;border-radius:8px;padding:10px;text-align:center;">
+        <div style="font-size:20px;">🗓️</div>
+        <div style="font-size:12px;font-weight:700;color:#1a1a2e;margin-top:4px;">12 Months</div>
+        <div style="font-size:11px;color:#ff6b35;font-weight:600;">Low markup</div>
+      </div>
+    </div>
+
+    <div id="instFormErr" class="modal-err"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="form-group" style="margin:0;">
+        <label>Full Name *</label>
+        <input type="text" id="instName" placeholder="Muhammad Danish" style="padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;width:100%;font-size:13px;outline:none;" onfocus="this.style.borderColor='#ff6b35'" onblur="this.style.borderColor='#ddd'">
+      </div>
+      <div class="form-group" style="margin:0;">
+        <label>CNIC Number *</label>
+        <input type="text" id="instCnic" placeholder="35202-1234567-1" maxlength="15" style="padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;width:100%;font-size:13px;outline:none;" onfocus="this.style.borderColor='#ff6b35'" onblur="this.style.borderColor='#ddd'">
+      </div>
+      <div class="form-group" style="margin:0;">
+        <label>Phone Number *</label>
+        <input type="tel" id="instPhone" placeholder="03XX-XXXXXXX" style="padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;width:100%;font-size:13px;outline:none;" onfocus="this.style.borderColor='#ff6b35'" onblur="this.style.borderColor='#ddd'">
+      </div>
+      <div class="form-group" style="margin:0;">
+        <label>Email Address</label>
+        <input type="email" id="instEmail" placeholder="your@email.com" style="padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;width:100%;font-size:13px;outline:none;" onfocus="this.style.borderColor='#ff6b35'" onblur="this.style.borderColor='#ddd'">
+      </div>
+      <div class="form-group" style="margin:0;">
+        <label>Product / Item *</label>
+        <input type="text" id="instProduct" placeholder="e.g. MacBook Air M5" style="padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;width:100%;font-size:13px;outline:none;" onfocus="this.style.borderColor='#ff6b35'" onblur="this.style.borderColor='#ddd'">
+      </div>
+      <div class="form-group" style="margin:0;">
+        <label>Product Price (Rs) *</label>
+        <input type="number" id="instPrice" placeholder="389999" style="padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;width:100%;font-size:13px;outline:none;" onfocus="this.style.borderColor='#ff6b35'" onblur="this.style.borderColor='#ddd'">
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top:10px;">
+      <label>Instalment Duration *</label>
+      <select id="instDuration" style="width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:13px;outline:none;background:#fff;" onfocus="this.style.borderColor='#ff6b35'" onblur="this.style.borderColor='#ddd'">
+        <option value="">-- Select duration --</option>
+        <option value="3">3 Months — 0% markup</option>
+        <option value="6">6 Months — 0% markup</option>
+        <option value="12">12 Months — Small markup</option>
+        <option value="24">24 Months — Standard markup</option>
+      </select>
+    </div>
+
+    <div class="form-group" style="margin-top:10px;">
+      <label>Bank Name *</label>
+      <select id="instBank" style="width:100%;padding:9px 12px;border:1.5px solid #ddd;border-radius:7px;font-size:13px;outline:none;background:#fff;" onfocus="this.style.borderColor='#ff6b35'" onblur="this.style.borderColor='#ddd'">
+        <option value="">-- Select bank --</option>
+        <option>HBL</option>
+        <option>MCB</option>
+        <option>UBL</option>
+        <option>Meezan Bank</option>
+        <option>Bank Alfalah</option>
+        <option>Allied Bank</option>
+        <option>Standard Chartered</option>
+        <option>Faysal Bank</option>
+        <option>Habib Metropolitan</option>
+        <option>Silk Bank</option>
+      </select>
+    </div>
+
+    <div id="instCalcBox" style="display:none;background:#f0faf5;border:1.5px solid #22a85a;border-radius:8px;padding:12px;margin:12px 0;font-size:13px;">
+      <div style="font-weight:700;color:#0f6e56;margin-bottom:6px;">📊 Monthly Breakdown</div>
+      <div id="instCalcText"></div>
+    </div>
+
+    <button class="form-btn" style="margin-top:12px;" onclick="submitInstalmentForm()">Submit Application →</button>
+
+    <div style="font-size:11px;color:#aaa;text-align:center;margin-top:10px;">
+      ✅ Subject to bank approval &nbsp;|&nbsp; 📞 Helpline: +92 327 6927349
+    </div>
+  </div>
+</div>
+
+<!-- ===== SEARCH RESULTS MODAL ===== -->
+<div class="cat-modal-overlay" id="searchModal" style="z-index:9050;">
+  <div class="cat-modal-box" style="max-width:700px;">
+    <div class="cat-modal-header">
+      <div class="cat-modal-title" id="searchModalTitle">🔍 Search Results</div>
+      <button class="cat-modal-close" onclick="document.getElementById('searchModal').classList.remove('open')">✕</button>
+    </div>
+    <div class="cat-modal-body">
+      <div class="cat-products-grid" id="searchResultsGrid"></div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
